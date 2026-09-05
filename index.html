@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Muni Boys Golf Club of Las Vegas</title>
+
+<style>
+
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7f4;color:#172019}
+
+header{background:#174d2c;color:white;padding:22px 18px;text-align:center}
+
+header h1{margin:0;font-size:28px}header p{margin:7px 0 0;opacity:.9}
+
+nav{display:flex;gap:8px;overflow:auto;padding:12px;background:white;border-bottom:1px solid #ddd}
+
+nav button{border:0;border-radius:22px;padding:11px 17px;background:#e7eee9;font-weight:bold;white-space:nowrap}
+
+nav button.active{background:#174d2c;color:white}
+
+main{max-width:900px;margin:auto;padding:18px}
+
+.card{background:white;border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 2px 8px #00000012}
+
+h2{margin-top:0;color:#174d2c}.game{border:1px solid #ddd;border-radius:12px;padding:14px;margin:10px 0}
+
+.big{font-size:30px;font-weight:bold;color:#174d2c}
+
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+
+.stat{background:#eef5ef;border-radius:12px;padding:15px;text-align:center}
+
+button.action{width:100%;border:0;border-radius:10px;background:#174d2c;color:white;padding:14px;font-size:17px;font-weight:bold}
+
+input,select{width:100%;padding:12px;margin:6px 0 12px;border:1px solid #bbb;border-radius:9px;font-size:16px}
+
+.player{display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #eee}
+
+.hidden{display:none}.foursome{background:#f7faf7;border:1px solid #d5dfd7;border-radius:10px;padding:12px;margin:10px 0}
+
+footer{text-align:center;padding:25px;color:#777;font-size:14px}
+
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>⛳ Muni Boys Golf Club of Las Vegas</h1>
+
+<p>Golf reservations, pairings and member management</p>
+
+</header>
+
+<nav>
+
+<button class="active" onclick="showPage('home',this)">Home</button>
+
+<button onclick="showPage('games',this)">Games</button>
+
+<button onclick="showPage('reservations',this)">Reservations</button>
+
+<button onclick="showPage('pairings',this)">Pairings</button>
+
+<button onclick="showPage('members',this)">Members</button>
+
+</nav>
+
+<main>
+
+<section id="home">
+
+<div class="card">
+
+<h2>Club Dashboard</h2>
+
+<div class="grid">
+
+<div class="stat"><div class="big">300</div>Members</div>
+
+<div class="stat"><div class="big">60</div>Players / Game</div>
+
+<div class="stat"><div class="big">3</div>Games / Week</div>
+
+<div class="stat"><div class="big">15</div>Foursomes</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>Next Game</h2>
+
+<div class="game">
+
+<strong>Mountain Falls Golf Club</strong><br>
+
+Monday • 8:00 AM<br><br>
+
+<span id="count">4 players currently listed</span>
+
+</div>
+
+<button class="action" onclick="showPage('reservations')">Reserve a Spot</button>
+
+</div>
+
+</section>
+
+<section id="games" class="hidden">
+
+<div class="card">
+
+<h2>Upcoming Games</h2>
+
+<div class="game"><strong>Monday</strong><br>Mountain Falls Golf Club • 8:00 AM</div>
+
+<div class="game"><strong>Wednesday</strong><br>Las Vegas Golf Club • 7:30 AM</div>
+
+<div class="game"><strong>Friday</strong><br>Wildhorse Golf Club • 8:00 AM</div>
+
+</div>
+
+</section>
+
+<section id="reservations" class="hidden">
+
+<div class="card">
+
+<h2>Player Reservation</h2>
+
+<label>Player Name</label>
+
+<input id="playerName" placeholder="Enter player name">
+
+<label>Select Game</label>
+
+<select id="gameSelect">
+
+<option>Monday - Mountain Falls</option>
+
+<option>Wednesday - Las Vegas Golf Club</option>
+
+<option>Friday - Wildhorse Golf Club</option>
+
+</select>
+
+<button class="action" onclick="reserve()">Add Reservation</button>
+
+<p id="message"></p>
+
+</div>
+
+<div class="card">
+
+<h2>Current Reservations</h2>
+
+<div id="reservationList">
+
+<div class="player"><span>Romy Suba</span><span>Confirmed</span></div>
+
+<div class="player"><span>Leo Balagtas</span><span>Confirmed</span></div>
+
+<div class="player"><span>Darwin Ragon</span><span>Confirmed</span></div>
+
+<div class="player"><span>Manny Martinez</span><span>Confirmed</span></div>
+
+</div>
+
+</div>
+
+</section>
+
+<section id="pairings" class="hidden">
+
+<div class="card">
+
+<h2>Foursome Pairings</h2>
+
+<p>Organizer view for creating and arranging groups.</p>
+
+<div class="foursome">
+
+<strong>Foursome 1</strong>
+
+<div class="player">Romy Suba</div>
+
+<div class="player">Leo Balagtas</div>
+
+<div class="player">Darwin Ragon</div>
+
+<div class="player">Manny Martinez</div>
+
+</div>
+
+<div class="foursome">
+
+<strong>Foursome 2</strong>
+
+<div class="player">Available</div>
+
+<div class="player">Available</div>
+
+<div class="player">Available</div>
+
+<div class="player">Available</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section id="members" class="hidden">
+
+<div class="card">
+
+<h2>Member Directory</h2>
+
+<input id="search" placeholder="Search member" onkeyup="filterMembers()">
+
+<div id="memberList">
+
+<div class="player">Romy Suba</div>
+
+<div class="player">Leo Balagtas</div>
+
+<div class="player">Darwin Ragon</div>
+
+<div class="player">Manny Martinez</div>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+<footer>
+
+Muni Boys Golf Club of Las Vegas<br>
+
+Member scheduling system
+
+</footer>
+
+<script>
+
+function showPage(id,btn){
+
+ document.querySelectorAll("main section").forEach(x=>x.classList.add("hidden"));
+
+ document.getElementById(id).classList.remove("hidden");
+
+ document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
+
+ if(btn)btn.classList.add("active");
+
+ window.scrollTo(0,0);
+
+}
+
+function reserve(){
+
+ let name=document.getElementById("playerName").value.trim();
+
+ if(!name){document.getElementById("message").innerText="Please enter a player name.";return}
+
+ let row=document.createElement("div");
+
+ row.className="player";
+
+ row.innerHTML="<span>"+name+"</span><span>Confirmed</span>";
+
+ document.getElementById("reservationList").appendChild(row);
+
+ document.getElementById("message").innerText=name+" has been added.";
+
+ document.getElementById("playerName").value="";
+
+}
+
+function filterMembers(){
+
+ let q=document.getElementById("search").value.toLowerCase();
+
+ document.querySelectorAll("#memberList .player").forEach(x=>{
+
+  x.style.display=x.innerText.toLowerCase().includes(q)?"flex":"none";
+
+ });
+
+}
+
+</script>
+
+</body>
+
+</html>
