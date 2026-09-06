@@ -310,30 +310,19 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
  console.log("Supabase connected", db);
  loadGames();
  async function makeReservation(name, gameId) {
-  const { data: member, error: memberError } = await db
-    .from('members')
-    .select('id')
-    .ilike('name', name)
-    .limit(1)
-    .maybeSingle();
-
-  if (memberError || !member) {
-    alert('Member not found. Please use the member name on file.');
-    return false;
-  }
-
-  const { error } = await db
-    .from('signups')
-    .insert([
-      {
-        game_id: Number(gameId),
-        member_id: member.id
-      }
-    ]);
+  const { data, error } = await db.rpc('reserve_by_name', {
+    p_name: name,
+    p_game_id: Number(gameId)
+  });
 
   if (error) {
     console.log('Reservation error:', error);
     alert('Reservation could not be saved.');
+    return false;
+  }
+
+  if (!data) {
+    alert('Member not found. Please use the member name on file.');
     return false;
   }
 
