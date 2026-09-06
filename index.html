@@ -271,26 +271,21 @@ function showPage(id,btn){
  window.scrollTo(0,0);
 
 }
+async function reserve() {
+  const name = document.getElementById("playerName").value.trim();
 
-function reserve(){
+  if (!name) {
+    document.getElementById("message").innerText = "Please enter a player name.";
+    return;
+  }
 
- let name=document.getElementById("playerName").value.trim();
+  const success = await makeReservation(name, 1);
 
- if(!name){document.getElementById("message").innerText="Please enter a player name.";return}
-
- let row=document.createElement("div");
-
- row.className="player";
-
- row.innerHTML="<span>"+name+"</span><span>Confirmed</span>";
-
- document.getElementById("reservationList").appendChild(row);
-
- document.getElementById("message").innerText=name+" has been added.";
-
- document.getElementById("playerName").value="";
-
-}
+  if (success) {
+    document.getElementById("message").innerText = name + " has been added.";
+    document.getElementById("playerName").value = "";
+  }
+} 
 
 function filterMembers(){
 
