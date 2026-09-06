@@ -309,7 +309,26 @@ const SUPABASE_KEY = 'sb_publishable_f2o73UN2JVnZNJjfudjNEw_BhxU_qrY';
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
  console.log("Supabase connected", db);
  loadGames();
- 
+ async function makeReservation(name, gameId) {
+  const { data, error } = await db
+    .from('signups')
+    .insert([
+      {
+        player_name: name,
+        game_id: Number(gameId)
+      }
+    ])
+    .select();
+
+  if (error) {
+    console.log('Reservation error:', error);
+    alert('Reservation could not be saved.');
+    return false;
+  }
+
+  alert('Reservation saved!');
+  return true;
+}
  async function testDatabase() {
   const { data, error } = await db
     .from('signups')
