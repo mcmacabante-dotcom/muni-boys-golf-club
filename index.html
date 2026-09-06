@@ -305,7 +305,13 @@ function filterMembers(){
 }
 
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://iwxfbdjgzzynhjdzvhjq.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_f2o73UN2JVnZNJjfudjNEw_BhxU_qrY';
 
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+</script>
 </body>
 
 </html>
