@@ -307,6 +307,21 @@ const SUPABASE_KEY = 'sb_publishable_f2o73UN2JVnZNJjfudjNEw_BhxU_qrY';
 
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
  console.log("Supabase connected", db);
+ async function testDatabase() {
+  const { data, error } = await db
+    .from('signups')
+    .select('*');
+
+  if (error) {
+    console.log('Database error:', error);
+    alert('Database connection error');
+  } else {
+    console.log('Real signups:', data);
+    alert('Database connected! Found ' + data.length + ' signup(s).');
+  }
+}
+
+testDatabase();
 </script>
 </body>
 
