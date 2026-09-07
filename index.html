@@ -303,6 +303,27 @@ const SUPABASE_KEY = 'sb_publishable_f2o73UN2JVnZNJjfudjNEw_BhxU_qrY';
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
  console.log("Supabase connected", db);
  loadGames();
+ loadReservations();
+
+async function loadReservations() {
+  const list = document.getElementById('reservationList');
+
+  const { data, error } = await db.rpc('get_reservations');
+
+  if (error) {
+    console.log('Reservation list error:', error);
+    return;
+  }
+
+  list.innerHTML = '';
+
+  data.forEach(r => {
+    const row = document.createElement('div');
+    row.className = 'player';
+    row.innerHTML = `<span>${r.player_name}</span><span>Confirmed</span>`;
+    list.appendChild(row);
+  });
+}
  async function makeReservation(name, gameId) {
   const { data, error } = await db.rpc('reserve_by_name', {
     p_name: name,
