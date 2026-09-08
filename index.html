@@ -322,7 +322,7 @@ async function loadReservations() {
   data.forEach(r => {
     const row = document.createElement('div');
     row.className = 'player';
-    row.innerHTML = `<span>${r.player_name}</span><span>Confirmed</span>`;
+    row.innerHTML = `<span>${r.player_name}</span><button type="button" onclick="cancelReservation(${r.signup_id})">Cancel</button>`;
     list.appendChild(row);
   });
 }
@@ -361,6 +361,23 @@ if (duplicate) {
   alert('Reservation saved!');
   return true;
 }
+ async function cancelReservation(id) {
+  if (!confirm('Cancel this reservation?')) return;
+
+  const { error } = await db
+    .from('signups')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    alert('Reservation could not be cancelled.');
+    return;
+  }
+
+  alert('Reservation cancelled.');
+  await loadReservations();
+}
+ 
  async function testDatabase() {
   const { data, error } = await db
     .from('signups')
