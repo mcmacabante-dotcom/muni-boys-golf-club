@@ -364,13 +364,21 @@ if (duplicate) {
  async function cancelReservation(id) {
   if (!confirm('Cancel this reservation?')) return;
 
-  const { error } = await db
-    .from('signups')
-    .delete()
-    .eq('id', id);
+  const pin = prompt('Enter Admin PIN:');
+  if (!pin) return;
+
+  const { data, error } = await db.rpc('admin_cancel_reservation', {
+    reservation_id: Number(id),
+    admin_pin: pin
+  });
 
   if (error) {
-    alert('Reservation could not be cancelled.');
+    alert('Cancellation failed.');
+    return;
+  }
+
+  if (!data) {
+    alert('Incorrect Admin PIN or reservation not found.');
     return;
   }
 
