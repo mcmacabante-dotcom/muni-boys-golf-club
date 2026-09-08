@@ -311,9 +311,9 @@ async function loadReservations() {
   const { data, error } = await db.rpc('get_reservations');
 
   if (error) {
-    console.log('Reservation list error:', error);
-    return;
-  }
+  alert('Reservation list error: ' + error.message);
+  return;
+  
 
   list.innerHTML = '';
 
