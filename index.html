@@ -311,7 +311,7 @@ async function loadReservations() {
   const list = document.getElementById('reservationList');
 
   const { data, error } = await db.rpc('get_reservations');
-alert('Loaded ' + (data ? data.length : 0) + ' reservations');
+
   if (error) {
   alert('Reservation list error: ' + error.message);
   return;
