@@ -356,16 +356,21 @@ const name = member?.name || 'Available';
     list.appendChild(box);
   });
 }
- async function movePlayer(memberId, foursomeId, position, pin) {
-  const { error } = await supabaseClient.rpc('admin_move_player', {
-    p_member_id: memberId,
-    p_foursome_id: foursomeId,
-    p_position: position,
-    p_pin: pin
+ async function movePlayer(playerAssignmentId, targetFoursomeId, targetPosition, pin) {
+  const { data, error } = await db.rpc('admin_move_player', {
+    player_assignment_id: playerAssignmentId,
+    target_foursome_id: targetFoursomeId,
+    target_position: targetPosition,
+    admin_pin: pin
   });
 
   if (error) {
     alert('Could not move player: ' + error.message);
+    return false;
+  }
+
+  if (!data) {
+    alert('Incorrect admin PIN or player could not be moved.');
     return false;
   }
 
