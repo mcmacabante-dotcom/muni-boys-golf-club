@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+h<!DOCTYPE html>
 
 <html lang="en">
 
@@ -356,7 +356,22 @@ const name = member?.name || 'Available';
     list.appendChild(box);
   });
 }
- 
+ async function movePlayer(memberId, foursomeId, position, pin) {
+  const { error } = await supabaseClient.rpc('admin_move_player', {
+    p_member_id: memberId,
+    p_foursome_id: foursomeId,
+    p_position: position,
+    p_pin: pin
+  });
+
+  if (error) {
+    alert('Could not move player: ' + error.message);
+    return false;
+  }
+
+  await loadFoursomes();
+  return true;
+}
  async function makeReservation(name, gameId) {
  const { data: existing, error: checkError } = await db.rpc('get_reservations');
 
