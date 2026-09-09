@@ -359,7 +359,7 @@ const name = member?.name || 'Available';
   });
 }
  async function startMove(playerAssignmentId) {
-  const targetFoursome = prompt('Move to which foursome number?');
+  let targetFoursome = prompt('Move to which foursome number?');
   if (!targetFoursome) return;
   const targetPosition = 1;
   const targetGroup = foursomes.find(f => f.group_number === Number(targetFoursome));
