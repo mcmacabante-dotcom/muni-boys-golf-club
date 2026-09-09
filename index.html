@@ -343,7 +343,7 @@ if (memberError) {
       .filter(p => p.foursome_id === f.id)
       .sort((a, b) => a.position - b.position);
 
-    let html = `<strong>Foursome ${f.group_number}</strong>
+    let html = `<strong>Foursome ${f.group_number}</strong>`;
     for (let position = 1; position <= 4; position++) {
       const player = assigned.find(p => p.position === position);
       const member = player ? members.find(m => m.id === player.member_id) : null;
