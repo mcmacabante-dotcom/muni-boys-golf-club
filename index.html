@@ -331,7 +331,7 @@ const { data: members, error: memberError } = await db
   .select('id, name');
 
 if (memberError) {
-  list.innerHTML = '<p>Could not load members.</p>';
+ list.innerHTML = '<p>Member error: ' + memberError.message + '</p>'; 
   return;
 }
 
