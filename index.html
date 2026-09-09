@@ -279,7 +279,7 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
  console.log("Supabase connected", db);
  
  loadReservations();
-
+loadFoursomes();
 async function loadReservations() {
   const list = document.getElementById('reservationList');
 
@@ -299,6 +299,54 @@ async function loadReservations() {
     list.appendChild(row);
   });
 }
+async function loadFoursomes() {
+  const list = document.getElementById('foursomeList');
+  if (!list) return;
+
+  list.innerHTML = '';
+
+  const { data: foursomes, error: foursomeError } = await db
+    .from('foursomes')
+    .select('id, group_number')
+    .eq('game_id', 1)
+    .order('group_number');
+
+  if (foursomeError) {
+    list.innerHTML = '<p>Could not load foursomes.</p>';
+    return;
+  }
+
+  const { data: players, error: playerError } = await db
+    .from('foursome_players')
+    .select('foursome_id, position, members(name)')
+    .order('position');
+
+  if (playerError) {
+    list.innerHTML = '<p>Could not load players.</p>';
+    return;
+  }
+
+  foursomes.forEach(f => {
+    const box = document.createElement('div');
+    box.className = 'foursome';
+
+    const assigned = players
+      .filter(p => p.foursome_id === f.id)
+      .sort((a, b) => a.position - b.position);
+
+    let html = `<strong>Foursome ${f.group_number}</strong>`;
+
+    for (let position = 1; position <= 4; position++) {
+      const player = assigned.find(p => p.position === position);
+      const name = player?.members?.name || 'Available';
+      html += `<div class="player">${name}</div>`;
+    }
+
+    box.innerHTML = html;
+    list.appendChild(box);
+  });
+}
+ 
  async function makeReservation(name, gameId) {
  const { data: existing, error: checkError } = await db.rpc('get_reservations');
 
