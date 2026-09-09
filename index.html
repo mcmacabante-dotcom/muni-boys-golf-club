@@ -362,8 +362,8 @@ const name = member?.name || 'Available';
   let targetFoursome = prompt('Move to which foursome number?');
   if (!targetFoursome) return;
   const targetPosition = 1;
-  const targetGroup = foursomes.find(f => f.group_number === Number(targetFoursome));
-  if (!targetGroup) { alert('Foursome not found.'); return; }
+  const { data: targetGroup, error: targetError } = await db.from('foursomes').select('id').eq('game_id', 1).eq('group_number', Number(targetFoursome)).maybeSingle();
+  if (targetError || !targetGroup) { alert('Foursome not found.'); return; }
   targetFoursome = targetGroup.id;
   const pin = prompt('Enter admin PIN:');
   if (!pin) return;
