@@ -349,7 +349,7 @@ if (memberError) {
       const member = player ? members.find(m => m.id === player.member_id) : null;
 const name = member?.name || 'Available';
     html += player
-  ? `<div class="player">${name} <button onclick="movePlayer(${player.id}, ${f.id}, ${position})">Move</button></div>`
+  ? `<div class="player">${name} <button onclick="startMove(${player.id})">Move</button></div>`
 : `<div class="player">Available</div>`;
   
     }
@@ -358,6 +358,15 @@ const name = member?.name || 'Available';
     list.appendChild(box);
   });
 }
+ async function startMove(playerAssignmentId) {
+  const targetFoursome = prompt('Move to which foursome number?');
+  if (!targetFoursome) return;
+  const targetPosition = prompt('Which position? Enter 1, 2, 3, or 4.');
+  if (!targetPosition) return;
+  const pin = prompt('Enter admin PIN:');
+  if (!pin) return;
+  await movePlayer(playerAssignmentId, Number(targetFoursome), Number(targetPosition), pin);
+  }
  async function movePlayer(playerAssignmentId, targetFoursomeId, targetPosition, pin) {
   const { data, error } = await db.rpc('admin_move_player', {
     player_assignment_id: playerAssignmentId,
