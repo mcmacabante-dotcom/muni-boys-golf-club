@@ -317,14 +317,23 @@ async function loadFoursomes() {
   }
 
   const { data: players, error: playerError } = await db
-    .from('foursome_players')
-    .select('foursome_id, position, members(name)')
-    .order('position');
+  .from('foursome_players')
+  .select('foursome_id, member_id, position')
+  .order('position');
 
-  if (playerError) {
-    list.innerHTML = '<p>Could not load players.</p>';
-    return;
-  }
+if (playerError) {
+  list.innerHTML = '<p>Could not load players.</p>';
+  return;
+}
+
+const { data: members, error: memberError } = await db
+  .from('members')
+  .select('id, name');
+
+if (memberError) {
+  list.innerHTML = '<p>Could not load members.</p>';
+  return;
+}
 
   foursomes.forEach(f => {
     const box = document.createElement('div');
@@ -338,7 +347,8 @@ async function loadFoursomes() {
 
     for (let position = 1; position <= 4; position++) {
       const player = assigned.find(p => p.position === position);
-      const name = player?.members?.name || 'Available';
+      const member = player ? members.find(m => m.id === player.member_id) : null;
+const name = member?.name || 'Available';
       html += `<div class="player">${name}</div>`;
     }
 
