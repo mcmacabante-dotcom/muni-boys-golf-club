@@ -318,7 +318,7 @@ async function loadFoursomes() {
 
   const { data: players, error: playerError } = await db
   .from('foursome_players')
-  .select('foursome_id, member_id, position')
+  .select('id, foursome_id, member_id, position')
   .order('position');
 
 if (playerError) {
