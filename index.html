@@ -343,13 +343,15 @@ if (memberError) {
       .filter(p => p.foursome_id === f.id)
       .sort((a, b) => a.position - b.position);
 
-    let html = `<strong>Foursome ${f.group_number}</strong>`;
-
+    let html = `<strong>Foursome ${f.group_number}</strong>
     for (let position = 1; position <= 4; position++) {
       const player = assigned.find(p => p.position === position);
       const member = player ? members.find(m => m.id === player.member_id) : null;
 const name = member?.name || 'Available';
-      html += `<div class="player">${name}</div>`;
+    html += player
+  ? `<div class="player">${name} <button onclick="movePlayer(${player.id}, ${f.id}, ${position})">Move</button></div>`
+: `<div class="player">Available</div>`;
+  
     }
 
     box.innerHTML = html;
