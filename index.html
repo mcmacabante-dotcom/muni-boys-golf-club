@@ -361,7 +361,7 @@ const name = member?.name || 'Available';
  async function startMove(playerAssignmentId) {
   let targetFoursome = prompt('Move to which foursome number?');
   if (!targetFoursome) return;
-  const targetPosition = 1;
+  const targetPosition = prompt('Which position? Enter 1, 2, 3, or 4.');
   const { data: targetGroup, error: targetError } = await db.from('foursomes').select('id').eq('game_id', 1).eq('group_number', Number(targetFoursome)).maybeSingle();
   if (targetError || !targetGroup) { alert('Foursome not found.'); return; }
   targetFoursome = targetGroup.id;
