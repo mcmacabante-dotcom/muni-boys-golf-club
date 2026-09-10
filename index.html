@@ -362,6 +362,7 @@ const name = member?.name || 'Available';
   let targetFoursome = prompt('Move to which foursome number?');
   if (!targetFoursome) return;
   const targetPosition = prompt('Which position? Enter 1, 2, 3, or 4.');
+  if (!['1','2','3','4'].includes(targetPosition)) { alert('Please enter position 1, 2, 3, or 4.'); return; }
   const { data: targetGroup, error: targetError } = await db.from('foursomes').select('id').eq('game_id', 1).eq('group_number', Number(targetFoursome)).maybeSingle();
   if (targetError || !targetGroup) { alert('Foursome not found.'); return; }
   targetFoursome = targetGroup.id;
