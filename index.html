@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 
 <html lang="en">
 
@@ -380,20 +380,83 @@ const name = member?.name || 'Available';
   });
 }
  async function startMove(playerAssignmentId) {
-  let targetFoursome = prompt('Move to which foursome number?');
-  if (!targetFoursome) return;
-
-  const { data: targetGroup, error: targetError } = await db
+  const { data: groups, error: groupsError } = await db
     .from('foursomes')
-    .select('id')
+    .select('id, group_number')
     .eq('game_id', 1)
-    .eq('group_number', Number(targetFoursome))
-    .single();
+    .order('group_number');
 
-  if (targetError || !targetGroup) {
-    alert('Foursome not found.');
+  if (groupsError || !groups || groups.length === 0) {
+    alert('Could not load foursomes.');
     return;
   }
+
+  const targetGroup = await new Promise(resolve => {
+    const overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.inset = '0';
+    overlay.style.background = 'rgba(0,0,0,0.45)';
+    overlay.style.zIndex = '9999';
+    overlay.style.display = 'flex';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+    overlay.style.padding = '20px';
+
+    const panel = document.createElement('div');
+    panel.style.background = 'white';
+    panel.style.borderRadius = '20px';
+    panel.style.padding = '20px';
+    panel.style.width = '100%';
+    panel.style.maxWidth = '420px';
+    panel.style.maxHeight = '80vh';
+    panel.style.overflowY = 'auto';
+
+    const title = document.createElement('h3');
+    title.textContent = 'Move to which foursome?';
+    title.style.marginTop = '0';
+    panel.appendChild(title);
+
+    const grid = document.createElement('div');
+    grid.style.display = 'grid';
+    grid.style.gridTemplateColumns = 'repeat(3, 1fr)';
+    grid.style.gap = '10px';
+
+    groups.forEach(group => {
+      const button = document.createElement('button');
+      button.textContent = 'Foursome ' + group.group_number;
+      button.style.padding = '14px 8px';
+      button.style.fontSize = '16px';
+      button.style.borderRadius = '12px';
+
+      button.onclick = () => {
+        overlay.remove();
+        resolve(group);
+      };
+
+      grid.appendChild(button);
+    });
+
+    panel.appendChild(grid);
+
+    const cancel = document.createElement('button');
+    cancel.textContent = 'Cancel';
+    cancel.style.width = '100%';
+    cancel.style.marginTop = '15px';
+    cancel.style.padding = '14px';
+    cancel.style.fontSize = '16px';
+    cancel.style.borderRadius = '12px';
+
+    cancel.onclick = () => {
+      overlay.remove();
+      resolve(null);
+    };
+
+    panel.appendChild(cancel);
+    overlay.appendChild(panel);
+    document.body.appendChild(overlay);
+  });
+
+  if (!targetGroup) return;
 
   const { data: occupied, error: occupiedError } = await db
     .from('foursome_players')
