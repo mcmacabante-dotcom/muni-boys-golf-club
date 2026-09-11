@@ -510,8 +510,7 @@ const name = member?.name || 'Available';
     targetPosition,
     pin
   );
-}
- async function movePlayer(playerAssignmentId, targetFoursomeId, targetPosition, pin) {
+} async function movePlayer(playerAssignmentId, targetFoursomeId, targetPosition, pin) {
   const { data, error } = await db.rpc('admin_move_player', {
     player_assignment_id: playerAssignmentId,
     target_foursome_id: targetFoursomeId,
