@@ -548,7 +548,8 @@ const duplicate = existing.some(r =>
 if (duplicate) {
   alert('You are already reserved for this game.');
   return false;
-} const { data, error } = await db.rpc('reserve_by_name', {
+}
+  const { data, error } = await db.rpc('reserve_by_name', {
     p_name: name,
     p_game_id: Number(gameId)
   });
