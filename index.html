@@ -311,6 +311,7 @@ async function loadMembers() {
     row.textContent = member.name;
     list.appendChild(row);
   });
+}
 async function loadGames() {
   const select = document.getElementById('gameSelect');
   if (!select) return;
