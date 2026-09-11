@@ -404,11 +404,12 @@ const name = member?.name || 'Available';
   });
 }
  async function startMove(playerAssignmentId) {
+  const selectedGameId = Number(document.getElementById('gameSelect')?.value || 1);
   const { data: groups, error: groupsError } = await db
     .from('foursomes')
     .select('id, group_number')
-    .eq('game_id', 1)
-    .order('group_number');
+   .eq('game_id', selectedGameId)   
+   .order('group_number');
 
   if (groupsError || !groups || groups.length === 0) {
     alert('Could not load foursomes.');
