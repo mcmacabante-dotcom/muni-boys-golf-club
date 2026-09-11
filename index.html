@@ -299,7 +299,28 @@ async function loadReservations() {
     list.appendChild(row);
   });
 }
-async function loadFoursomes() {
+async function loadMembers() {
+  const list = document.getElementById('memberRows');
+  if (!list) return;
+
+  const { data, error } = await db
+    .from('members')
+    .select('id, name')
+    .order('name');
+
+  if (error) return;
+
+  list.innerHTML = '';
+
+  data.forEach(member => {
+    const row = document.createElement('div');
+    row.className = 'player';
+    row.textContent = member.name;
+    list.appendChild(row);
+  });
+}
+ 
+ async function loadFoursomes() {
   const list = document.getElementById('foursomeList');
   if (!list) return;
 
