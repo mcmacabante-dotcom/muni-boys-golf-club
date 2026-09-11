@@ -275,8 +275,7 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
  console.log("Supabase connected", db);
  
 loadReservations();
-loadGames();
-loadFoursomes();
+loadGames().then(loadFoursomes);
  async function loadReservations() {
   const list = document.getElementById('reservationList');
 
