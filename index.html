@@ -323,7 +323,7 @@ async function loadGames() {
     .from('games')
     .select('id, course_name, game_date')
     .order('game_date');
-alert('Games loaded: ' + (games ? games.length : 0));
+
   if (error) {
     alert('Could not load games: ' + error.message);
     return;
