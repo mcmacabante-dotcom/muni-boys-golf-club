@@ -148,11 +148,7 @@ Monday • 8:00 AM<br><br>
 
 <select id="gameSelect">
 
-<option>Monday - Mountain Falls</option>
 
-<option>Wednesday - Las Vegas Golf Club</option>
-
-<option>Friday - Wildhorse Golf Club</option>
 
 </select>
 
@@ -318,18 +314,48 @@ async function loadMembers() {
     row.textContent = member.name;
     list.appendChild(row);
   });
+async function loadGames() {
+  const select = document.getElementById('gameSelect');
+  if (!select) return;
+
+  const { data: games, error } = await db
+    .from('games')
+    .select('id, course_name, game_date')
+    .order('game_date');
+
+  if (error) {
+    alert('Could not load games: ' + error.message);
+    return;
+  }
+
+  select.innerHTML = '';
+
+  games.forEach(game => {
+    const option = document.createElement('option');
+    option.value = game.id;
+
+    const date = new Date(game.game_date + 'T00:00:00');
+    const dateText = date.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric'
+    });
+
+    option.textContent = `${dateText} - ${game.course_name}`;
+    select.appendChild(option);
+  });
 }
  
  async function loadFoursomes() {
   const list = document.getElementById('foursomeList');
   if (!list) return;
-
+const selectedGameId = Number(document.getElementById('gameSelect')?.value || 1);
   list.innerHTML = '';
 
   const { data: foursomes, error: foursomeError } = await db
     .from('foursomes')
     .select('id, group_number')
-    .eq('game_id', 1)
+    .eq('game_id', selectedGameId)
     .order('group_number');
 
   if (foursomeError) {
