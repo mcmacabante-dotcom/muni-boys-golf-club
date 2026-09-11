@@ -382,15 +382,47 @@ const name = member?.name || 'Available';
  async function startMove(playerAssignmentId) {
   let targetFoursome = prompt('Move to which foursome number?');
   if (!targetFoursome) return;
-  const targetPosition = prompt('Which position? Enter 1, 2, 3, or 4.');
-  if (!['1','2','3','4'].includes(targetPosition)) { alert('Please enter position 1, 2, 3, or 4.'); return; }
-  const { data: targetGroup, error: targetError } = await db.from('foursomes').select('id').eq('game_id', 1).eq('group_number', Number(targetFoursome)).maybeSingle();
-  if (targetError || !targetGroup) { alert('Foursome not found.'); return; }
-  targetFoursome = targetGroup.id;
+
+  const { data: targetGroup, error: targetError } = await db
+    .from('foursomes')
+    .select('id')
+    .eq('game_id', 1)
+    .eq('group_number', Number(targetFoursome))
+    .single();
+
+  if (targetError || !targetGroup) {
+    alert('Foursome not found.');
+    return;
+  }
+
+  const { data: occupied, error: occupiedError } = await db
+    .from('foursome_players')
+    .select('position')
+    .eq('foursome_id', targetGroup.id);
+
+  if (occupiedError) {
+    alert('Could not check available positions.');
+    return;
+  }
+
+  const used = occupied.map(p => p.position);
+  const targetPosition = [1, 2, 3, 4].find(p => !used.includes(p));
+
+  if (!targetPosition) {
+    alert('That foursome is full.');
+    return;
+  }
+
   const pin = prompt('Enter admin PIN:');
   if (!pin) return;
-  await movePlayer(playerAssignmentId, Number(targetFoursome), Number(targetPosition), pin);
-  }
+
+  await movePlayer(
+    playerAssignmentId,
+    targetGroup.id,
+    targetPosition,
+    pin
+  );
+}
  async function movePlayer(playerAssignmentId, targetFoursomeId, targetPosition, pin) {
   const { data, error } = await db.rpc('admin_move_player', {
     player_assignment_id: playerAssignmentId,
