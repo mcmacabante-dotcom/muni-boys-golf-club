@@ -179,7 +179,8 @@ Monday • 8:00 AM<br><br>
 <h2>Foursome Pairings</h2>
 
 <p>Organizer view for creating and arranging groups.</p>
-
+ <label for="foursomeGameSelect"><strong>Select Game</strong></label>
+<select id="foursomeGameSelect" onchange="loadFoursomes()"></select>
 <div id="foursomeList"></div>
 </div>
 </section>
@@ -314,7 +315,8 @@ async function loadMembers() {
 }
 async function loadGames() {
   const select = document.getElementById('gameSelect');
-  if (!select) return;
+ const foursomeSelect = document.getElementById('foursomeGameSelect');
+ if (!select) return;
 
   const { data: games, error } = await db
     .from('games')
@@ -327,7 +329,7 @@ async function loadGames() {
   }
 
   select.innerHTML = '';
-
+ foursomeSelect.innerHTML = '';
   games.forEach(game => {
     const option = document.createElement('option');
     option.value = game.id;
@@ -341,13 +343,14 @@ async function loadGames() {
 
     option.textContent = `${dateText} - ${game.course_name}`;
     select.appendChild(option);
+   foursomeSelect.appendChild(option.cloneNode(true));
   });
 }
  
  async function loadFoursomes() {
   const list = document.getElementById('foursomeList');
   if (!list) return;
-const selectedGameId = Number(document.getElementById('gameSelect')?.value || 1);
+const selectedGameId = Number(document.getElementById('foursomeGameSelect')?.value || 1);
   list.innerHTML = '';
 
   const { data: foursomes, error: foursomeError } = await db
@@ -404,9 +407,8 @@ const name = member?.name || 'Available';
   });
 }
  async function startMove(playerAssignmentId) {
-  const selectedGameId = Number(document.getElementById('gameSelect')?.value || 1);
-  const { data: groups, error: groupsError } = await db
-    .from('foursomes')
+const selectedGameId = Number(document.getElementById('foursomeGameSelect')?.value || 1); 
+ const { data: groups, error: groupsError } = await db    .from('foursomes')
     .select('id, group_number')
    .eq('game_id', selectedGameId)   
    .order('group_number');
