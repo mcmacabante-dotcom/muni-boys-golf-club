@@ -233,7 +233,33 @@ function showPage(id,btn){
  window.scrollTo(0,0);
 
 }
-async function reserve() {
+
+ async function organizerAccess() {
+  const pin = prompt('Enter admin PIN:');
+  if (!pin) return;
+
+  const { data, error } = await db.rpc('verify_admin_pin', {
+    admin_pin: pin
+  });
+
+  if (error) {
+    alert('Could not verify admin PIN.');
+    return;
+  }
+
+  if (!data) {
+    alert('Incorrect admin PIN.');
+    return;
+  }
+
+  document.querySelectorAll('.organizer-only').forEach(btn => {
+    btn.style.display = '';
+  });
+
+  alert('Organizer controls unlocked.');
+}
+ 
+ async function reserve() {
   const name = document.getElementById("playerName").value.trim();
  const game = document.getElementById("gameSelect").value;
 
