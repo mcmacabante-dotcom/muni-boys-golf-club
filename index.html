@@ -121,15 +121,12 @@ Monday • 8:00 AM<br><br>
 <div class="card">
 
 <h2>Upcoming Games</h2>
+<input id="newCourseName" placeholder="Enter golf course">
 
-<div class="game"><strong>Monday</strong><br>Mountain Falls Golf Club • 8:00 AM</div>
-
-<div class="game"><strong>Wednesday</strong><br>Las Vegas Golf Club • 7:30 AM</div>
-
-<div class="game"><strong>Friday</strong><br>Wildhorse Golf Club • 8:00 AM</div>
-
-</div>
-
+ <input id="newGameDate" type="date">
+  <button class="action" onclick="addGame()">Add Game</button>
+ <div id="gamesList"></div>
+ </div>
 </section>
 
 <section id="reservations" class="hidden">
@@ -339,6 +336,7 @@ list.appendChild(row);  });
 async function loadGames() {
   const select = document.getElementById('gameSelect');
  const foursomeSelect = document.getElementById('foursomeGameSelect');
+ const gamesList = document.getElementById('gamesList');
  if (!select) return;
 
   const { data: games, error } = await db
@@ -353,7 +351,8 @@ async function loadGames() {
 
   select.innerHTML = '';
  foursomeSelect.innerHTML = '';
-  games.forEach(game => {
+ gamesList.innerHTML = '';
+ games.forEach(game => {
     const option = document.createElement('option');
     option.value = game.id;
 
@@ -365,11 +364,27 @@ async function loadGames() {
     });
 
     option.textContent = `${dateText} - ${game.course_name}`;
-    select.appendChild(option);
+  const gameRow = document.createElement('div');
+  gameRow.textContent = `${dateText} – ${game.course_name}`;
+  gamesList.appendChild(gameRow);
+  select.appendChild(option);
    foursomeSelect.appendChild(option.cloneNode(true));
   });
 }
- 
+ async function addGame() {
+  const courseName = document.getElementById('newCourseName').value.trim();
+  const gameDate = document.getElementById('newGameDate').value;
+  if (!courseName || !gameDate) {
+   alert('Please enter a golf course and date.');
+   return;
+   }
+  const { error } = await db.from('games').insert([{ course_name: courseName, game_date: gameDate }]);
+  if (error) { alert('Could not add game.'); return; }
+  document.getElementById('newCourseName').value = '';
+  document.getElementById('newGameDate').value = '';
+  await loadGames();
+  alert('Game added successfully!');
+ }
  async function loadFoursomes() {
   const list = document.getElementById('foursomeList');
   if (!list) return;
