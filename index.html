@@ -192,6 +192,7 @@ Monday • 8:00 AM<br><br>
 
 <input id="search" placeholder="Search member" onkeyup="filterMembers()">
 
+ <button type="button" onclick="addMember()">+ Add Member</button>
 <div id="memberList">
 
 <p id="memberLoading">Loading members...</p>
@@ -630,6 +631,31 @@ if (duplicate) {
 loadGames();
 testDatabase();
 
+ async function addMember() {
+  const name = prompt('Enter new member name:');
+  if (!name || !name.trim()) return;
+
+  const pin = prompt('Enter admin PIN:');
+  if (!pin) return;
+
+  const { data, error } = await db.rpc('admin_add_member', {
+    member_name: name.trim(),
+    admin_pin: pin
+  });
+
+  if (error) {
+    alert('Could not add member: ' + error.message);
+    return;
+  }
+
+  if (!data) {
+    alert('Incorrect admin PIN or member could not be added.');
+    return;
+  }
+
+  alert('Member added successfully!');
+  await loadMembers();
+}
  
 </script>
 </body>
