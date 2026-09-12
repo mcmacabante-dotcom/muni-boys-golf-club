@@ -290,6 +290,7 @@ const SUPABASE_URL = 'https://iwxfbdjgzzynhjdzvhjq.supabase.co';
  alert('JavaScript started');
  loadReservations();
 loadGames().then(loadFoursomes);
+ loadMembers();
  async function loadReservations() {
   const list = document.getElementById('reservationList');
 
