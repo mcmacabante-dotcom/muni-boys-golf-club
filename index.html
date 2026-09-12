@@ -327,9 +327,14 @@ async function loadMembers() {
   data.forEach(member => {
     const row = document.createElement('div');
     row.className = 'player';
-    row.textContent = member.name;
-    list.appendChild(row);
-  });
+   row.textContent = member.name;
+
+const deleteButton = document.createElement('button');
+deleteButton.textContent = 'Delete';
+deleteButton.onclick = () => deleteMember(member.id, member.name);
+row.appendChild(deleteButton);
+
+list.appendChild(row);  });
 }
 async function loadGames() {
   const select = document.getElementById('gameSelect');
@@ -656,8 +661,33 @@ testDatabase();
   alert('Member added successfully!');
   await loadMembers();
 }
- 
+ async function deleteMember(memberId, memberName) {
+  const confirmed = confirm('Delete ' + memberName + ' from the Member Directory?');
+  if (!confirmed) return;
+
+  const pin = prompt('Enter admin PIN:');
+  if (!pin) return;
+
+  const { data, error } = await db.rpc('admin_delete_member', {
+    member_id: memberId,
+    admin_pin: pin
+  });
+
+  if (error) {
+    alert('Could not delete member: ' + error.message);
+    return;
+  }
+
+  if (!data) {
+    alert('Incorrect admin PIN or member could not be deleted.');
+    return;
+  }
+
+  alert('Member deleted successfully!');
+  await loadMembers();
+}
 </script>
+ 
 </body>
 
 </html>
