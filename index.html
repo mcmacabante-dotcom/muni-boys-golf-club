@@ -366,6 +366,10 @@ async function loadGames() {
     option.textContent = `${dateText} - ${game.course_name}`;
   const gameRow = document.createElement('div');
   gameRow.textContent = `${dateText} – ${game.course_name}`;
+  const deleteButton = document.createElement('button');
+  deleteButton.textContent = 'Delete';
+deleteButton.onclick = () => deleteGame(game.id, game.course_name);
+gameRow.appendChild(deleteButton);
   gamesList.appendChild(gameRow);
   select.appendChild(option);
    foursomeSelect.appendChild(option.cloneNode(true));
@@ -385,6 +389,24 @@ async function loadGames() {
   await loadGames();
   alert('Game added successfully!');
  }
+
+ async function deleteGame(gameId, courseName) {
+  const ok = confirm('Delete ' + courseName + '?');
+  if (!ok) return;
+
+  const { error } = await db
+    .from('games')
+    .delete()
+    .eq('id', gameId);
+
+  if (error) {
+    alert('Could not delete game.');
+    return;
+  }
+
+  await loadGames();
+  alert('Game deleted successfully!');
+}
  async function loadFoursomes() {
   const list = document.getElementById('foursomeList');
   if (!list) return;
