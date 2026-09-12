@@ -194,15 +194,7 @@ Monday • 8:00 AM<br><br>
 
 <div id="memberList">
 
-<div class="player">Romy Suba</div>
-
-<div class="player">Leo Balagtas</div>
-
-<div class="player">Darwin Ragon</div>
-
-<div class="player">Manny Martinez</div>
-
-</div>
+<p id="memberLoading">Loading members...</p>
 
 </div>
 
@@ -318,8 +310,8 @@ loadGames().then(loadFoursomes);
   });
 }
 async function loadMembers() {
-  const list = document.getElementById('memberRows');
-  if (!list) return;
+ const list = document.getElementById('memberList');
+ if (!list) return;
 
   const { data, error } = await db
     .from('members')
@@ -636,6 +628,8 @@ if (duplicate) {
 }
 loadGames();
 testDatabase();
+
+ 
 </script>
 </body>
 
