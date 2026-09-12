@@ -70,11 +70,9 @@ footer{text-align:center;padding:25px;color:#777;font-size:14px}
 
 <button onclick="showPage('reservations',this)">Reservations</button>
 
-<button onclick="showPage('pairings',this)">Foursomes</button>
-
-<button onclick="showPage('members',this)">Members</button>
-
-</nav>
+<button class="organizer-only" style="display:none" onclick="showPage('pairings',this)">Foursomes</button>
+ <button onclick="organizerAccess()">Organizer</button>
+<button class="organizer-only" style="display:none" onclick="showPage('members',this)">Members</button></nav>
 
 <main>
 
