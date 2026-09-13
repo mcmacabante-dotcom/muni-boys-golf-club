@@ -506,7 +506,9 @@ if (reservationError) {
  function printFoursomes() {
   const gameSelect = document.getElementById('foursomeGameSelect');
   const foursomeList = document.getElementById('foursomeList');
-
+const filledFoursomes = Array.from(foursomeList.children).filter(box =>
+  Array.from(box.querySelectorAll('.player')).some(row => row.innerText.trim() !== 'Available')
+);
   const gameText = gameSelect.options[gameSelect.selectedIndex]?.text || 'Golf Game';
 
   const printWindow = window.open('', '_blank');
@@ -564,8 +566,7 @@ if (reservationError) {
     <body>
       <h1>Muni Boys Golf Club of Las Vegas</h1>
       <h2>${gameText}</h2>
-      ${foursomeList.innerHTML}
-    </body>
+    ${filledFoursomes.map(box => box.outerHTML).join('')}    </body>
     </html>
   `);
 
