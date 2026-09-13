@@ -421,19 +421,24 @@ if (foursomeError) {
  }
 
  async function deleteGame(gameId, courseName) {
+  const pin = prompt('Enter admin PIN:');
+if (!pin) return;
   const ok = confirm('Delete ' + courseName + '?');
   if (!ok) return;
 
-  const { error } = await db
-    .from('games')
-    .delete()
-    .eq('id', gameId);
-
+const { data, error } = await db.rpc('admin_delete_game', {
+  game_id: gameId,
+  admin_pin: pin
+});
   if (error) {
     alert('Could not delete game.');
     return;
   }
 
+ if (data !== true) {
+  alert('Incorrect admin PIN.');
+  return;
+}  
   await loadGames();
   alert('Game deleted successfully!');
 }
