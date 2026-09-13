@@ -141,9 +141,7 @@ Monday • 8:00 AM<br><br>
 
 <label>Select Game</label>
 
-<select id="gameSelect">
-
-
+<select id="gameSelect" onchange="loadReservations()">
 
 </select>
 
@@ -291,7 +289,7 @@ loadGames().then(loadFoursomes);
  loadMembers();
  async function loadReservations() {
   const list = document.getElementById('reservationList');
-
+  const selectedGameId = Number(document.getElementById('gameSelect')?.value || 0);
   const { data, error } = await db.rpc('get_reservations');
 
   if (error) {
@@ -302,7 +300,8 @@ loadGames().then(loadFoursomes);
   list.innerHTML = '';
 
   data.forEach(r => {
-    const row = document.createElement('div');
+   if (selectedGameId && Number(r.game_id) !== selectedGameId) return;
+   const row = document.createElement('div');
     row.className = 'player';
    row.innerHTML = `<span>${r.player_name} — ${new Date(r.game_date + 'T00:00:00').toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'})} — ${r.course_name}</span><button type="button" onclick="cancelReservation(${r.signup_id})">Cancel</button>`;    list.appendChild(row);
   });
