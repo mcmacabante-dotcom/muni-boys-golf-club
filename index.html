@@ -353,7 +353,13 @@ async function loadGames() {
   }
 
   select.innerHTML = '';
- foursomeSelect.innerHTML = '';
+ const { data: gameReservations, error: reservationCountError } =
+  await db.rpc('get_reservations');
+
+if (reservationCountError) {
+  alert('Could not load reservation counts.');
+  return;
+} foursomeSelect.innerHTML = '';
  gamesList.innerHTML = '';
  games.forEach(game => {
     const option = document.createElement('option');
@@ -365,11 +371,12 @@ async function loadGames() {
       month: 'short',
       day: 'numeric'
     });
-
-    option.textContent = `${dateText} - ${game.course_name}`;
+const reservationCount = gameReservations.filter(
+  r => Number(r.game_id) === Number(game.id)
+).length;
+  option.textContent = `${dateText} - ${game.course_name}`;
   const gameRow = document.createElement('div');
-  gameRow.textContent = `${dateText} – ${game.course_name}`;
-  const deleteButton = document.createElement('button');
+ gameRow.textContent = `${dateText} – ${game.course_name} — ${reservationCount} players reserved`;  const deleteButton = document.createElement('button');
   deleteButton.textContent = 'Delete';
 deleteButton.onclick = () => deleteGame(game.id, game.course_name);
 gameRow.appendChild(deleteButton);
