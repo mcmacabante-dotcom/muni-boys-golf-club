@@ -380,29 +380,32 @@ gameRow.appendChild(deleteButton);
  await loadReservations();
 }
  async function addGame() {
+  const pin = prompt('Enter admin PIN:'); if (!pin) return;
   const courseName = document.getElementById('newCourseName').value.trim();
   const gameDate = document.getElementById('newGameDate').value;
   if (!courseName || !gameDate) {
    alert('Please enter a golf course and date.');
    return;
    }
-  const { data: newGame, error } = await db
-  .from('games')
-  .insert([{ course_name: courseName, game_date: gameDate }])
-  .select('id')
-  .single();
-
+  const { data: newGameId, error } = await db.rpc('admin_add_game', {
+  p_course_name: courseName,
+  p_game_date: gameDate,
+  admin_pin: pin
+});
 if (error) {
   alert('Could not add game.');
   return;
 }
 
+if (!newGameId) {
+  alert('Incorrect admin PIN.');
+  return;
+}
 const newFoursomes = [];
-
 for (let i = 1; i <= 18; i++) {
   newFoursomes.push({
-    game_id: newGame.id,
-    group_number: i
+ game_id: newGameId,
+   group_number: i
   });
 }
 
