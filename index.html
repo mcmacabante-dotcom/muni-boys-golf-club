@@ -100,8 +100,7 @@ footer{text-align:center;padding:25px;color:#777;font-size:14px}
 
 <h2>Next Game</h2>
 
-<div class="game">
-
+<div class="game" id="nextGame">
 <strong>Mountain Falls Golf Club</strong><br>
 
 Monday • 8:00 AM<br><br>
@@ -351,8 +350,23 @@ async function loadGames() {
     alert('Could not load games: ' + error.message);
     return;
   }
+const nextGameBox = document.getElementById('nextGame');
 
-  select.innerHTML = '';
+if (nextGameBox && games.length > 0) {
+  const nextGame = games[0];
+
+  const nextDate = new Date(nextGame.game_date + 'T00:00:00');
+  const nextDateText = nextDate.toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'short',
+    day: 'numeric'
+  });
+
+  nextGameBox.innerHTML = `
+    <strong>${nextGame.course_name}</strong><br>
+    ${nextDateText}<br><br>
+  `;
+}  select.innerHTML = '';
  const { data: gameReservations, error: reservationCountError } =
   await db.rpc('get_reservations');
 
