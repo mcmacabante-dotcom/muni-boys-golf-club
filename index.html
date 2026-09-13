@@ -304,8 +304,7 @@ loadGames().then(loadFoursomes);
   data.forEach(r => {
     const row = document.createElement('div');
     row.className = 'player';
-    row.innerHTML = `<span>${r.player_name}</span><button type="button" onclick="cancelReservation(${r.signup_id})">Cancel</button>`;
-    list.appendChild(row);
+   row.innerHTML = `<span>${r.player_name} — ${new Date(r.game_date + 'T00:00:00').toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'})} — ${r.course_name}</span><button type="button" onclick="cancelReservation(${r.signup_id})">Cancel</button>`;    list.appendChild(row);
   });
 }
 async function loadMembers() {
