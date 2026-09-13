@@ -179,7 +179,8 @@ Monday • 8:00 AM<br><br>
 <p>Organizer view for creating and arranging groups.</p>
  <label for="foursomeGameSelect"><strong>Select Game</strong></label>
 <select id="foursomeGameSelect" onchange="loadFoursomes()"></select>
-<div id="foursomeList"></div>
+ <button type="button" class="action" onclick="printFoursomes()">Print Foursomes</button>
+ <div id="foursomeList"></div>
 </div>
 </section>
  
@@ -502,6 +503,76 @@ if (reservationError) {
     list.appendChild(box);
   });
 }
+ function printFoursomes() {
+  const gameSelect = document.getElementById('foursomeGameSelect');
+  const foursomeList = document.getElementById('foursomeList');
+
+  const gameText = gameSelect.options[gameSelect.selectedIndex]?.text || 'Golf Game';
+
+  const printWindow = window.open('', '_blank');
+
+  printWindow.document.write(`
+    <html>
+    <head>
+      <title>${gameText} - Foursomes</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          padding: 24px;
+          color: #000;
+        }
+
+        h1 {
+          text-align: center;
+          margin-bottom: 6px;
+        }
+
+        h2 {
+          text-align: center;
+          margin-top: 0;
+          margin-bottom: 24px;
+          font-size: 18px;
+        }
+
+        .foursome {
+          border: 1px solid #000;
+          padding: 10px;
+          margin-bottom: 12px;
+          break-inside: avoid;
+        }
+
+        .foursome strong {
+          display: block;
+          font-size: 16px;
+          margin-bottom: 8px;
+        }
+
+        .player {
+          padding: 5px 0;
+          font-size: 15px;
+        }
+
+        button {
+          display: none;
+        }
+
+        .player::before {
+          content: "☐ ";
+        }
+      </style>
+    </head>
+    <body>
+      <h1>Muni Boys Golf Club of Las Vegas</h1>
+      <h2>${gameText}</h2>
+      ${foursomeList.innerHTML}
+    </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+} 
  async function startMove(playerAssignmentId) {
 const selectedGameId = Number(document.getElementById('foursomeGameSelect')?.value || 1); 
  const { data: groups, error: groupsError } = await db    .from('foursomes')
