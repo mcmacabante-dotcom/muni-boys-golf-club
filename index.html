@@ -382,8 +382,34 @@ gameRow.appendChild(deleteButton);
    alert('Please enter a golf course and date.');
    return;
    }
-  const { error } = await db.from('games').insert([{ course_name: courseName, game_date: gameDate }]);
-  if (error) { alert('Could not add game.'); return; }
+  const { data: newGame, error } = await db
+  .from('games')
+  .insert([{ course_name: courseName, game_date: gameDate }])
+  .select('id')
+  .single();
+
+if (error) {
+  alert('Could not add game.');
+  return;
+}
+
+const newFoursomes = [];
+
+for (let i = 1; i <= 18; i++) {
+  newFoursomes.push({
+    game_id: newGame.id,
+    group_number: i
+  });
+}
+
+const { error: foursomeError } = await db
+  .from('foursomes')
+  .insert(newFoursomes);
+
+if (foursomeError) {
+  alert('Game was added, but the 18 foursomes could not be created.');
+  return;
+}
   document.getElementById('newCourseName').value = '';
   document.getElementById('newGameDate').value = '';
   await loadGames();
