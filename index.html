@@ -471,7 +471,12 @@ if (memberError) {
  list.innerHTML = '<p>Member error: ' + memberError.message + '</p>'; 
   return;
 }
+const { data: reservations, error: reservationError } = await db.rpc('get_reservations');
 
+if (reservationError) {
+  list.innerHTML = '<p>Could not load reservation details.</p>';
+  return;
+} 
   foursomes.forEach(f => {
     const box = document.createElement('div');
     box.className = 'foursome';
@@ -484,8 +489,10 @@ if (memberError) {
     for (let position = 1; position <= 4; position++) {
       const player = assigned.find(p => p.position === position);
       const member = player ? members.find(m => m.id === player.member_id) : null;
-const name = member?.name || 'Available';
-    html += player
+     const reservation = member ? reservations.find(r => Number(r.game_id) === selectedGameId && r.player_name === member.name) : null;
+    const name = member
+  ? member.name + (reservation?.ride_option ? ` — ${reservation.ride_option}` : '')
+  : 'Available';    html += player
   ? `<div class="player">${name} <button onclick="startMove(${player.id})">Move</button></div>`
 : `<div class="player">Available</div>`;
   
