@@ -145,6 +145,11 @@ Monday • 8:00 AM<br><br>
 
 </select>
 
+ <label>Walking or Riding</label>
+<select id="rideOption">
+  <option value="Walking">Walking</option>
+  <option value="Riding">Riding</option>
+</select>
 <button class="action" onclick="reserve()">Add Reservation</button>
 
 <p id="message"></p>
@@ -250,14 +255,13 @@ function showPage(id,btn){
  async function reserve() {
   const name = document.getElementById("playerName").value.trim();
  const game = document.getElementById("gameSelect").value;
-
+const rideOption = document.getElementById("rideOption").value;
   if (!name) {
     document.getElementById("message").innerText = "Please enter a player name.";
     return;
   }
 
-  const success = await makeReservation(name, game);
-
+const success = await makeReservation(name, game, rideOption);
   if (success) {
     document.getElementById("message").innerText = name + " has been added.";
     document.getElementById("playerName").value = "";
@@ -303,7 +307,7 @@ loadGames().then(loadFoursomes);
    if (selectedGameId && Number(r.game_id) !== selectedGameId) return;
    const row = document.createElement('div');
     row.className = 'player';
-   row.innerHTML = `<span>${r.player_name} — ${new Date(r.game_date + 'T00:00:00').toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'})} — ${r.course_name}</span><button type="button" onclick="cancelReservation(${r.signup_id})">Cancel</button>`;    list.appendChild(row);
+  row.innerHTML = `<span>${r.player_name}${r.ride_option ? ' — ' + r.ride_option : ''} — ${new Date(r.game_date + 'T00:00:00').toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'})} — ${r.course_name}</span><button type="button" onclick="cancelReservation(${r.signup_id})">Cancel</button>`; list.appendChild(row);
   });
 }
 async function loadMembers() {
@@ -619,8 +623,8 @@ const selectedGameId = Number(document.getElementById('foursomeGameSelect')?.val
   await loadFoursomes();
   return true;
 }
- async function makeReservation(name, gameId) {
- const { data: existing, error: checkError } = await db.rpc('get_reservations');
+ async function makeReservation(name, gameId, rideOption) {
+  const { data: existing, error: checkError } = await db.rpc('get_reservations');
 
 if (checkError) {
   alert('Could not check existing reservations.');
@@ -638,7 +642,8 @@ if (duplicate) {
 }
   const { data, error } = await db.rpc('reserve_by_name', {
     p_name: name,
-    p_game_id: Number(gameId)
+    p_game_id: Number(gameId),
+   p_ride_option: rideOption
   });
 
   if (error) {
