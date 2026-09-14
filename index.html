@@ -753,6 +753,23 @@ if (duplicate) {
   alert('You are already reserved for this game.');
   return false;
 }
+  const { data: gameInfo, error: gameInfoError } = await db
+  .from('games')
+  .select('player_limit')
+  .eq('id', Number(gameId))
+  .single();
+
+if (gameInfoError) {
+  alert('Could not check the player limit.');
+  return false;
+}
+
+const reservedCount = existing.filter(r => r.game_id === Number(gameId)).length;
+
+if (reservedCount >= gameInfo.player_limit) {
+  alert('This game is full. The player limit has been reached.');
+  return false;
+}
   const { data, error } = await db.rpc('reserve_by_name', {
     p_name: name,
     p_game_id: Number(gameId),
