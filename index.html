@@ -123,7 +123,8 @@ Monday • 8:00 AM<br><br>
 <input id="newCourseName" placeholder="Enter golf course">
 
  <input id="newGameDate" type="date">
-  <button class="action" onclick="addGame()">Add Game</button>
+ <input id="newPlayerLimit" type="number" min="1" value="60" placeholder="Player Limit">
+ <button class="action" onclick="addGame()">Add Game</button>
  <div id="gamesList"></div>
  </div>
 </section>
@@ -406,6 +407,7 @@ gameRow.appendChild(deleteButton);
   const pin = prompt('Enter admin PIN:'); if (!pin) return;
   const courseName = document.getElementById('newCourseName').value.trim();
   const gameDate = document.getElementById('newGameDate').value;
+  const playerLimit = parseInt(document.getElementById('newPlayerLimit').value, 10) || 60;
   if (!courseName || !gameDate) {
    alert('Please enter a golf course and date.');
    return;
@@ -413,8 +415,9 @@ gameRow.appendChild(deleteButton);
   const { data: newGameId, error } = await db.rpc('admin_add_game', {
   p_course_name: courseName,
   p_game_date: gameDate,
-  admin_pin: pin
-});
+  admin_pin: pin,
+   p_player_limit: playerLimit
+  });
 if (error) {
   alert('Could not add game.');
   return;
