@@ -373,7 +373,9 @@ if (nextGameBox && games.length > 0) {
 if (reservationCountError) {
   alert('Could not load reservation counts.');
   return;
-} foursomeSelect.innerHTML = '';
+}
+ select.innerHTML = '';
+ foursomeSelect.innerHTML = '';
  gamesList.innerHTML = '';
  games.forEach(game => {
     const option = document.createElement('option');
