@@ -863,8 +863,12 @@ testDatabase();
   alert('Member deleted successfully!');
   await loadMembers();
 }
-</script>
- 
+ setInterval(() => {
+  loadGames();
+  loadReservations();
+  loadFoursomes();
+  }, 10000);
+</script> 
 </body>
 
 </html>
