@@ -562,11 +562,24 @@ const { data: foursomes, error } = await db
 
 if (error) return;
 
-foursomes.forEach(f => {
+  const { data: foursomePlayers, error: playerError } = await db
+  .from('foursome_players')
+  .select('foursome_id')
+  .in('foursome_id', foursomes.map(f => f.id));
+
+  if (playerError) return;
+
+const playerCounts = {};
+(foursomePlayers || []).forEach(fp => {
+  playerCounts[fp.foursome_id] = (playerCounts[fp.foursome_id] || 0) + 1;
+});
+  foursomes.forEach(f => {
   const option = document.createElement('option');
   option.value = f.id;
-option.textContent = 'Foursome ' + f.group_number + ' — Available';
- choice.appendChild(option);
+
+   option.textContent = 'Foursome ' + f.group_number + (playerCounts[f.id] >= 4 ? ' – FULL' : ' – Available');
+   option.disabled = playerCounts[f.id] >= 4;
+   choice.appendChild(option);
 });
 }
  function printFoursomes() {
