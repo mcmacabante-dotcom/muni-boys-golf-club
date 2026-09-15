@@ -537,8 +537,7 @@ if (reservationError) {
   ? member.name + (reservation?.ride_option ? ` — ${reservation.ride_option}` : '')
   : 'Available';    html += player
   ? `<div class="player">${name} <button onclick="startMove(${player.id})">Move</button></div>`
-: `<div class="player">Available</div>`;
-  
+: `<div class="player"><button type="button" onclick="chooseFoursome(${f.id})">Choose This Foursome</button></div>`;  
     }
 
     box.innerHTML = html;
