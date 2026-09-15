@@ -803,8 +803,8 @@ if (reservedCount >= gameInfo.player_limit) {
 
   if (error) {
     console.log('Reservation error:', error);
-    alert('You are already registered for this game.');
-    return false;
+    alert('Reservation error: ' + error.message);
+   return false;
   }
 
   if (!data) {
