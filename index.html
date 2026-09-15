@@ -537,7 +537,7 @@ if (reservationError) {
   ? member.name + (reservation?.ride_option ? ` — ${reservation.ride_option}` : '')
   : 'Available';    html += player
   ? `<div class="player">${name} <button onclick="startMove(${player.id})">Move</button></div>`
-: `<div class="player"><button type="button" onclick="chooseFoursome(${f.id})">Choose This Foursome</button></div>`;  
+ : window.foursomeWasChosen ? `<div class="player"><button type="button" onclick="chooseFoursome(${f.id})">Choose This Foursome</button></div>` : `<div class="player">Available</div>`;
     }
 
     box.innerHTML = html;
@@ -546,11 +546,13 @@ if (reservationError) {
 }
 function chooseFoursome(foursomeId) {
 window.selectedFoursomeId = foursomeId;
+ window.foursomeWasChosen = true;
  showPage('reservations', null);
 }
  function openFoursomeChooser() {
 document.getElementById('foursomeGameSelect').value = document.getElementById('gameSelect').value;
-showPage('pairings', null);
+  window.foursomeWasChosen = false;
+  showPage('pairings', null);
  loadFoursomes();
 }
 
