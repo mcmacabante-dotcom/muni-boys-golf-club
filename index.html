@@ -544,8 +544,11 @@ if (reservationError) {
     list.appendChild(box);
   });
 }
-
-function openFoursomeChooser() {
+function chooseFoursome(foursomeId) {
+  document.getElementById('foursomeChoice').value = foursomeId;
+  showPage('reservations', null);
+}
+ function openFoursomeChooser() {
 document.getElementById('foursomeGameSelect').value = document.getElementById('gameSelect').value;
 showPage('pairings', null);
  loadFoursomes();
