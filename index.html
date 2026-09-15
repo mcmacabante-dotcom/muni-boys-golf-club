@@ -567,8 +567,8 @@ if (error) return;
 foursomes.forEach(f => {
   const option = document.createElement('option');
   option.value = f.id;
-  option.textContent = 'Foursome ' + f.group_number;
-  choice.appendChild(option);
+option.textContent = 'Foursome ' + f.group_number + ' — Available';
+ choice.appendChild(option);
 });
 }
  function printFoursomes() {
