@@ -547,9 +547,8 @@ if (reservationError) {
 }
 
 function openFoursomeChooser() {
-showPage('pairings', null);
-} 
- async function loadFoursomeChoices() {
+  loadFoursomeChoices();
+} async function loadFoursomeChoices() {
   const choice = document.getElementById('foursomeChoice');
 const gameId = Number(document.getElementById('gameSelect').value);
 
