@@ -776,15 +776,7 @@ if (checkError) {
   return false;
 }
 
-const duplicate = existing.some(r =>
-  r.game_id === Number(gameId) &&
-  r.player_name.trim().toLowerCase() === name.trim().toLowerCase()
-);
 
-if (duplicate) {
-  alert('You are already reserved for this game.');
-  return false;
-}
   const { data: gameInfo, error: gameInfoError } = await db
   .from('games')
   .select('player_limit')
