@@ -261,7 +261,7 @@ function showPage(id,btn){
   const name = document.getElementById("playerName").value.trim();
  const game = document.getElementById("gameSelect").value;
 const rideOption = document.getElementById("rideOption").value;
-  const foursomeChoice = document.getElementById("foursomeChoice").value;
+ const foursomeChoice = window.selectedFoursomeId || document.getElementById("foursomeChoice")?.value;
   if (!name) {
     document.getElementById("message").innerText = "Please enter a player name.";
     return;
@@ -545,8 +545,8 @@ if (reservationError) {
   });
 }
 function chooseFoursome(foursomeId) {
-  document.getElementById('foursomeChoice').value = foursomeId;
-  showPage('reservations', null);
+window.selectedFoursomeId = foursomeId;
+ showPage('reservations', null);
 }
  function openFoursomeChooser() {
 document.getElementById('foursomeGameSelect').value = document.getElementById('gameSelect').value;
