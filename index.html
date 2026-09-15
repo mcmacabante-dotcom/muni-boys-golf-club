@@ -272,7 +272,7 @@ const rideOption = document.getElementById("rideOption").value;
   document.getElementById("message").innerText = "Please choose a foursome.";
   return;
 }
-const success = await makeReservation(name, game, rideOption, foursomeChoice);
+const success = await assign_player(name, game, rideOption, foursomeChoice);
   if (success) {
     document.getElementById("message").innerText = name + " has been added.";
     document.getElementById("playerName").value = "";
