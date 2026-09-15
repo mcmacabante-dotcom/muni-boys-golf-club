@@ -834,7 +834,8 @@ if (reservedCount >= gameInfo.player_limit) {
   }
 
   alert('Reservation saved!');
-  return true;
+ await loadReservations();
+ return true;
 }
  async function cancelReservation(id) {
   if (!confirm('Cancel this reservation?')) return;
