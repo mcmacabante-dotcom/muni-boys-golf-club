@@ -821,8 +821,8 @@ if (reservedCount >= gameInfo.player_limit) {
   }
 
   if (!data) {
-    alert('Member not found. Please use the member name on file.');
-    return false;
+   alert('Reservation could not be saved. Please check the member name, game limit, and foursome availability.');
+   return false;
   }
 
   alert('Reservation saved!');
