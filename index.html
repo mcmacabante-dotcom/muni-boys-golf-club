@@ -148,9 +148,9 @@ Monday • 8:00 AM<br><br>
   <option value="Riding">Riding</option>
 </select>
 <label>Choose Foursome</label>
- <select id="foursomeChoice">
-  <option value="">Select a foursome</option>
- </select>
+<select id="foursomeChoice" onclick="openFoursomeChooser()">
+ <option value="">View foursomes and choose</option>
+</select>
  <button class="action" onclick="reserve()">Add Reservation</button>
   
 
@@ -548,6 +548,9 @@ if (reservationError) {
   });
 }
 
+function openFoursomeChooser() {
+showPage('pairings', null);
+} 
  async function loadFoursomeChoices() {
   const choice = document.getElementById('foursomeChoice');
 const gameId = Number(document.getElementById('gameSelect').value);
