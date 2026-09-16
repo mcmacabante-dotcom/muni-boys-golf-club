@@ -648,12 +648,18 @@ const filledFoursomes = Array.from(foursomeList.children).filter(box =>
         .player::before {
           content: "☐ ";
         }
+.foursomes-print {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}        
       </style>
     </head>
     <body>
       <h1>Muni Boys Golf Club of Las Vegas</h1>
       <h2>${gameText}</h2>
-    ${filledFoursomes.map(box => box.outerHTML).join('')}    </body>
+    <div class="foursomes-print">${filledFoursomes.map(box => box.outerHTML).join('')}</div>
+    </body>
     </html>
   `);
 
