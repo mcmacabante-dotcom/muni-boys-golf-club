@@ -123,7 +123,7 @@ Monday • 8:00 AM<br><br>
 
  <input id="newGameDate" type="date">
  <input id="newPlayerLimit" type="number" min="1" value="60" placeholder="Player Limit">
- <button class="action" onclick="addGame()">Add Game</button>
+ <button id="gameActionButton" class="action" onclick="addGame()">Add Game</button>
  <div id="gamesList"></div>
  </div>
 </section>
@@ -402,9 +402,13 @@ const reservationCount = gameReservations.filter(
   option.textContent = `${dateText} - ${game.course_name}`;
   const gameRow = document.createElement('div');
  gameRow.textContent = `${dateText} – ${game.course_name} — ${reservationCount} players reserved`;  const deleteButton = document.createElement('button');
+  const editButton = document.createElement('button');
+editButton.textContent = 'Edit';
+  editButton.onclick = () => editGame(game.id, game.course_name, game.game_date, game.max_players);
   deleteButton.textContent = 'Delete';
 deleteButton.onclick = () => deleteGame(game.id, game.course_name);
-gameRow.appendChild(deleteButton);
+gameRow.appendChild(editButton);
+  gameRow.appendChild(deleteButton);
   gamesList.appendChild(gameRow);
   select.appendChild(option);
    foursomeSelect.appendChild(option.cloneNode(true));
@@ -457,6 +461,40 @@ if (foursomeError) {
   alert('Game added successfully!');
  }
 
+
+ async function editGame(gameId, courseName, gameDate, playerLimit) {
+  const pin = prompt('Enter admin PIN:');
+  if (!pin) return;
+
+  const newCourseName = prompt('Golf course:', courseName);
+  if (newCourseName === null) return;
+
+  const newGameDate = prompt('Game date (YYYY-MM-DD):', gameDate);
+  if (newGameDate === null) return;
+
+  const newPlayerLimit = prompt('Player limit:', playerLimit || 60);
+  if (newPlayerLimit === null) return;
+
+ const { data, error } = await db.rpc('admin_edit_game', {
+  game_id: gameId,
+  p_course_name: newCourseName.trim(),
+  p_game_date: newGameDate,
+  p_player_limit: parseInt(newPlayerLimit, 10),
+  admin_pin: pin
+});
+  if (error) {
+  alert('Could not edit game.');
+  return;
+}
+
+if (data !== true) {
+  alert('Incorrect admin PIN or game could not be updated.');
+  return;
+}
+
+await loadGames();
+alert('Game updated successfully!');
+ }
  async function deleteGame(gameId, courseName) {
   const pin = prompt('Enter admin PIN:');
 if (!pin) return;
