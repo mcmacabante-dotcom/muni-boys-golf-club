@@ -148,7 +148,9 @@ Monday • 8:00 AM<br><br>
   <option value="Riding">Riding</option>
 </select>
 <button type="button" class="foursome-choice" onclick="openFoursomeChooser()">View Foursomes and Choose</button>
- 
+
+ <label>Notes / Requests</label>
+ <textarea id="reservationNotes" placeholder="Enter any notes or special requests"></textarea>
  <button class="action" onclick="reserve()">Add Reservation</button>
   
 
@@ -261,7 +263,8 @@ function showPage(id,btn){
   const name = document.getElementById("playerName").value.trim();
  const game = document.getElementById("gameSelect").value;
 const rideOption = document.getElementById("rideOption").value;
- const foursomeChoice = window.selectedFoursomeId || document.getElementById("foursomeChoice")?.value;
+  const notes = document.getElementById("reservationNotes").value.trim();
+  const foursomeChoice = window.selectedFoursomeId || document.getElementById("foursomeChoice")?.value;
   if (!name) {
     document.getElementById("message").innerText = "Please enter a player name.";
     return;
@@ -270,7 +273,7 @@ const rideOption = document.getElementById("rideOption").value;
   document.getElementById("message").innerText = "Please choose a foursome.";
   return;
 }
-const success = await assign_player(name, game, rideOption, foursomeChoice);
+const success = await assign_player(name, game, rideOption, foursomeChoice, notes);
   if (success) {
     document.getElementById("message").innerText = name + " has been added.";
     document.getElementById("playerName").value = "";
@@ -838,7 +841,7 @@ const selectedGameId = Number(document.getElementById('foursomeGameSelect')?.val
   await loadFoursomes();
   return true;
 }
-async function assign_player (name, gameId, rideOption, foursomeChoice) {
+async function assign_player(name, gameId, rideOption, foursomeChoice, notes) { 
  const { data: existing, error: checkError } = await db.rpc('get_reservations');
 
 if (checkError) {
@@ -868,7 +871,8 @@ if (reservedCount >= gameInfo.player_limit) {
     p_name: name,
     p_game_id: Number(gameId),
    p_ride_option: rideOption,
-  p_foursome_choice: Number(foursomeChoice)
+ p_foursome_choice: Number(foursomeChoice),
+   p_notes: notes
   });
 
   if (error) {
