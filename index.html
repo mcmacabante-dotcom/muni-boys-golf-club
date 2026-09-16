@@ -352,8 +352,8 @@ async function loadGames() {
 
   const { data: games, error } = await db
     .from('games')
-    .select('id, course_name, game_date')
-    .order('game_date');
+   .select('id, course_name, game_date, max_players')
+   .order('game_date');
 
   if (error) {
     alert('Could not load games: ' + error.message);
