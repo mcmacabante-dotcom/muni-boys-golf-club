@@ -375,7 +375,8 @@ if (nextGameBox && games.length > 0) {
     <strong>${nextGame.course_name}</strong><br>
     ${nextDateText}<br><br>
   `;
-}  select.innerHTML = '';
+}  const selectedGame = select.value;
+ select.innerHTML = '';
  const { data: gameReservations, error: reservationCountError } =
   await db.rpc('get_reservations');
 
@@ -415,7 +416,7 @@ gameRow.appendChild(editButton);
   select.appendChild(option);
    foursomeSelect.appendChild(option.cloneNode(true));
   });
-
+ if (selectedGame) select.value = selectedGame;
 }
  async function addGame() {
   const pin = prompt('Enter admin PIN:'); if (!pin) return;
