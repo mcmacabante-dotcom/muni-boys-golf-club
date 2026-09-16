@@ -406,6 +406,7 @@ gameRow.textContent = `${dateText} – ${game.course_name} – ${reservationCoun
   const editButton = document.createElement('button');
 editButton.textContent = 'Edit';
   editButton.onclick = () => editGame(game.id, game.course_name, game.game_date, game.max_players);
+  const deleteButton = document.createElement('button');
   deleteButton.textContent = 'Delete';
 deleteButton.onclick = () => deleteGame(game.id, game.course_name);
 gameRow.appendChild(editButton);
