@@ -594,7 +594,7 @@ const playerCounts = {};
   const gameSelect = document.getElementById('foursomeGameSelect');
   const foursomeList = document.getElementById('foursomeList');
 const filledFoursomes = Array.from(foursomeList.children).filter(box =>
-  Array.from(box.querySelectorAll('.player')).some(row => row.innerText.trim() !== 'Available')
+  box.querySelector('.player:not(:has(button))')
 );
   const gameText = gameSelect.options[gameSelect.selectedIndex]?.text || 'Golf Game';
 
