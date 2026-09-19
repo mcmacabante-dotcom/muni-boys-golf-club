@@ -592,8 +592,7 @@ if (reservationError) {
   const { error } = await db
     .from('foursomes')
     .update({ hole_assignment: hole.trim() })
-    .eq('id', foursomeId);
-
+   .eq('id', Number(foursomeId));
   if (error) {
     alert('Could not save hole assignment: ' + error.message);
   }
