@@ -531,8 +531,8 @@ const selectedGameId = Number(document.getElementById('foursomeGameSelect')?.val
 
   const { data: foursomes, error: foursomeError } = await db
     .from('foursomes')
-    .select('id, group_number')
-    .eq('game_id', selectedGameId)
+   .select('id, group_number, hole_assignment')
+   .eq('game_id', selectedGameId)
     .order('group_number');
 
   if (foursomeError) {
@@ -572,8 +572,8 @@ if (reservationError) {
       .filter(p => p.foursome_id === f.id)
       .sort((a, b) => a.position - b.position);
 
-    let html = `<strong>Foursome ${f.group_number}</strong>`;
-    for (let position = 1; position <= 4; position++) {
+    let html = `<strong>Foursome ${f.group_number}</strong> — Hole: <input type="text" value="${f.hole_assignment || ''}" placeholder="Example: 1A" style="width:70px;" onchange="saveHoleAssignment(${f.id}, this.value)">`;
+   for (let position = 1; position <= 4; position++) {
       const player = assigned.find(p => p.position === position);
       const member = player ? members.find(m => m.id === player.member_id) : null;
      const reservation = member ? reservations.find(r => Number(r.game_id) === selectedGameId && r.player_name === member.name) : null;
@@ -588,7 +588,17 @@ if (reservationError) {
     list.appendChild(box);
   });
 }
-function chooseFoursome(foursomeId) {
+ async function saveHoleAssignment(foursomeId, hole) {
+  const { error } = await db
+    .from('foursomes')
+    .update({ hole_assignment: hole.trim() })
+    .eq('id', foursomeId);
+
+  if (error) {
+    alert('Could not save hole assignment: ' + error.message);
+  }
+}
+ function chooseFoursome(foursomeId) {
 window.selectedFoursomeId = foursomeId;
  window.foursomeWasChosen = true;
  showPage('reservations', null);
