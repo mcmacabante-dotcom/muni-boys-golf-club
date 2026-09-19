@@ -594,6 +594,7 @@ if (reservationError) {
     .update({ hole_assignment: hole.trim() })
    .eq('id', Number(foursomeId))
 .select();
+  alert('Saved rows: ' + JSON.stringify(data));
   if (error) {
     alert('Could not save hole assignment: ' + error.message);
   }
