@@ -589,10 +589,11 @@ if (reservationError) {
   });
 }
  async function saveHoleAssignment(foursomeId, hole) {
-  const { error } = await db
-    .from('foursomes')
+  const { data, error } = await db
+   .from('foursomes')
     .update({ hole_assignment: hole.trim() })
-   .eq('id', Number(foursomeId));
+   .eq('id', Number(foursomeId))
+.select();
   if (error) {
     alert('Could not save hole assignment: ' + error.message);
   }
