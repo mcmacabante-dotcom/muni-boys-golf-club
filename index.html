@@ -589,8 +589,17 @@ if (reservationError) {
   });
 }
  async function saveHoleAssignment(foursomeId, hole) {
-  const { data, error } = await db
-   .from('foursomes')
+  const pin = prompt('Enter Organizer PIN to change hole assignment:');
+  if (!pin) return;
+const { data: pinOK } = await db.rpc('verify_admin_pin', {
+ admin_pin: pin
+});
+
+if (!pinOK) {
+  alert('Incorrect Organizer PIN.');
+  return;
+}
+ const { data, error } = await db.from('foursomes')
     .update({ hole_assignment: hole.trim() })
    .eq('id', Number(foursomeId))
 .select();
