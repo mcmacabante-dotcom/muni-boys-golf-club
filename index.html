@@ -410,7 +410,7 @@ gameRow.textContent = `${dateText} – ${game.course_name} – ${reservationCoun
   gameRow.onclick = () => {
   select.value = game.id;
   showPage('reservations', null);
-}};
+};
   const editButton = document.createElement('button');
 editButton.textContent = 'Edit';
   editButton.onclick = () => editGame(game.id, game.course_name, game.game_date, game.max_players);
