@@ -406,7 +406,11 @@ const reservationCount = gameReservations.filter(
   option.textContent = `${dateText} - ${game.course_name}`;
   const gameRow = document.createElement('div');
 gameRow.textContent = `${dateText} – ${game.course_name} – ${reservationCount} players reserved — Limit: ${game.max_players || 60}`;
-  
+  gameRow.style.cursor = 'pointer';
+  gameRow.onclick = () => {
+  select.value = game.id;
+  showPage('reservations', null);
+}};
   const editButton = document.createElement('button');
 editButton.textContent = 'Edit';
   editButton.onclick = () => editGame(game.id, game.course_name, game.game_date, game.max_players);
