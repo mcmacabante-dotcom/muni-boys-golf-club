@@ -614,8 +614,9 @@ if (!pinOK) {
 }
  function chooseFoursome(foursomeId) {
 window.selectedFoursomeId = foursomeId;
- window.foursomeWasChosen = true;
- showPage('reservations', null);
+
+  window.foursomeWasChosen = false;
+  showPage('reservations', null);
 }
  function openFoursomeChooser() {
 document.getElementById('foursomeGameSelect').value = document.getElementById('gameSelect').value;
