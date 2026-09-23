@@ -277,6 +277,7 @@ const success = await assign_player(name, game, rideOption, foursomeChoice, note
   if (success) {
     document.getElementById("message").innerText = name + " has been added.";
     document.getElementById("playerName").value = "";
+   document.getElementById("reservationNotes").value = "";
   }
 } 
 
