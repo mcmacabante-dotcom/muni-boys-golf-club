@@ -335,11 +335,11 @@ async function loadMembers() {
 
   list.innerHTML = '';
 
-  data.forEach(member => {
-    const row = document.createElement('div');
+  data.forEach((member, index) => {
+   const row = document.createElement('div');
     row.className = 'player';
-   row.textContent = member.name;
-
+   row.textContent = `${index + 1}. ${member.name}`;
+   
 const deleteButton = document.createElement('button');
 deleteButton.textContent = 'Delete';
 deleteButton.onclick = () => deleteMember(member.id, member.name);
