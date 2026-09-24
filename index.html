@@ -316,11 +316,11 @@ loadGames().then(loadFoursomes);
 
   list.innerHTML = '';
 
-  data.forEach(r => {
+  data.forEach((r, index) => {
    if (selectedGameId && Number(r.game_id) !== selectedGameId) return;
    const row = document.createElement('div');
     row.className = 'player';
-  row.innerHTML = `<span>${r.player_name}${r.ride_option ? ' — ' + r.ride_option : ''} — ${new Date(r.game_date + 'T00:00:00').toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'})} — ${r.course_name}${r.notes ? ' — Notes: ' + r.notes : ''}</span><span style="display:flex; gap:8px;"><button type="button" onclick="editReservation(${r.signup_id}, '${r.ride_option || ''}', '${r.notes || ''}')">Edit</button><button type="button" onclick="cancelReservation(${r.signup_id})">Cancel</button</span>`; list.appendChild(row);
+  row.innerHTML = `<span>${index + 1}. {r.player_name}${r.ride_option ? ' — ' + r.ride_option : ''} — ${new Date(r.game_date + 'T00:00:00').toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'})} — ${r.course_name}${r.notes ? ' — Notes: ' + r.notes : ''}</span><span style="display:flex; gap:8px;"><button type="button" onclick="editReservation(${r.signup_id}, '${r.ride_option || ''}', '${r.notes || ''}')">Edit</button><button type="button" onclick="cancelReservation(${r.signup_id})">Cancel</button</span>`; list.appendChild(row);
   });
 }
 async function loadMembers() {
