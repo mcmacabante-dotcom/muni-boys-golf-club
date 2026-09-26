@@ -722,6 +722,9 @@ const filledFoursomes = Array.from(foursomeList.children).filter(box =>
         .player::before {
           content: "☐ ";
         }
+.foursome:nth-child(10n + 1) {
+  break-before: page;
+}
 .foursomes-print {
   display: grid;
   grid-template-columns: 1fr 1fr;
