@@ -925,6 +925,8 @@ if (reservedCount >= gameInfo.player_limit) {
   }
 
   alert('Reservation saved!');
+ window.foursomeWasChosen = false;
+ window.selectedFoursomeId = null;
  await loadReservations();
  return true;
 }
