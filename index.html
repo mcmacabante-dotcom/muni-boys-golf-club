@@ -269,6 +269,10 @@ const rideOption = document.getElementById("rideOption").value;
     document.getElementById("message").innerText = "Please enter a player name.";
     return;
   }
+  if (!window.foursomeWasChosen) {
+  document.getElementById("message").innerText = "Please click View Foursomes and Choose, then choose your foursome.";
+  return;
+}
   if (!foursomeChoice) {
   document.getElementById("message").innerText = "Please choose a foursome.";
   return;
@@ -617,7 +621,7 @@ if (!pinOK) {
  function chooseFoursome(foursomeId) {
 window.selectedFoursomeId = foursomeId;
 
-  window.foursomeWasChosen = false;
+  window.foursomeWasChosen = true;
   showPage('reservations', null);
 }
  function openFoursomeChooser() {
