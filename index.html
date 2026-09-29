@@ -385,7 +385,7 @@ async function loadGames() {
 
   const { data: games, error } = await db
     .from('games')
-   .select('id, course_name, game_date, max_players')
+   .select('id, course_name, game_date, max_players, admin_message')
    .order('game_date');
 
   if (error) {
@@ -439,7 +439,8 @@ gameRow.textContent = `${dateText} – ${game.course_name} – ${reservationCoun
   gameRow.style.cursor = 'pointer';
   gameRow.onclick = () => {
   select.value = game.id;
-  showPage('reservations', null);
+   document.getElementById('adminGameMessage').value = game.admin_message || '';
+   showPage('reservations', null);
 };
   const editButton = document.createElement('button');
 editButton.textContent = 'Edit';
