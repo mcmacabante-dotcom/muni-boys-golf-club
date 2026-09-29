@@ -151,6 +151,9 @@ Monday • 8:00 AM<br><br>
 
  <label>Notes / Requests</label>
  <textarea id="reservationNotes" placeholder="Enter any notes or special requests"></textarea>
+ <label>Admin Message / Notes</label>
+ <textarea id="adminGameMessage" placeholder="Admin message for this game" readonly></textarea>
+ <button type="button" onclick="editAdminGameMessage()">Edit Admin Message</button>
  <button class="action" onclick="reserve()">Add Reservation</button>
   
 
@@ -258,7 +261,26 @@ function showPage(id,btn){
 
   alert('Organizer controls unlocked.');
 }
- 
+ async function editAdminGameMessage() {
+  const pin = prompt('Enter admin PIN:');
+  if (!pin) return;
+  const { data, error } = await db.rpc('verify_admin_pin', { admin_pin: pin });
+  if (error || !data) {
+   alert('Incorrect admin PIN.');
+   return;
+   }
+  const gameId = document.getElementById('gameSelect').value;
+  if (!gameId) return;
+  const currentMessage = document.getElementById('adminGameMessage').value;
+ const newMessage = prompt('Enter admin message for this game:', currentMessage);
+  if (newMessage === null) return;
+  const { error: updateError } = await db.from('games').update({ admin_message: newMessage }).eq('id', gameId);
+  if (updateError) {
+   alert('Could not save admin message: ' + updateError.message);
+   return;
+   }
+  document.getElementById('adminGameMessage').value = newMessage;
+  }
  async function reserve() {
   const name = document.getElementById("playerName").value.trim();
  const game = document.getElementById("gameSelect").value;
