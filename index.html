@@ -140,7 +140,7 @@ Monday • 8:00 AM<br><br>
 
 <label>Select Game</label>
 
-<select id="gameSelect" onchange="loadReservations(); loadFoursomeChoices()" onclick="loadFoursomeChoices()"> </select>
+<select id="gameSelect"onchange="loadReservations(); loadFoursomeChoices(); loadSelectedGameAdminMessage()" onclick="loadFoursomeChoices()"> </select>
 
  <label>Walk or Cart</label>
 <select id="rideOption">
@@ -377,7 +377,26 @@ row.appendChild(deleteButton);
 
 list.appendChild(row);  });
 }
-async function loadGames() {
+async function loadSelectedGameAdminMessage() {
+  const gameId = document.getElementById('gameSelect').value;
+  const box = document.getElementById('adminGameMessage');
+
+  if (!gameId || !box) return;
+
+  const { data, error } = await db
+    .from('games')
+    .select('admin_message')
+    .eq('id', gameId)
+    .single();
+
+  if (error) {
+    box.value = '';
+    return;
+  }
+
+  box.value = data?.admin_message || '';
+} 
+ async function loadGames() {
   const select = document.getElementById('gameSelect');
  const foursomeSelect = document.getElementById('foursomeGameSelect');
  const gamesList = document.getElementById('gamesList');
