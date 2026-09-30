@@ -156,6 +156,7 @@ Monday • 8:00 AM<br><br>
  <textarea id="adminGameMessage" placeholder="Admin message for this game" readonly style="width:100%; min-height:50px; font-size:14px; line-height:1.4; padding:12px;"></textarea>
  <button type="button" onclick="editAdminGameMessage()">Edit Admin Message</button>
  <button type="button" id="saveAdminMessageButton" onclick="saveAdminGameMessage()" style="display:none;">Save Admin Message</button>
+ <button type="button" onclick="deleteAdminGameMessage()">Delete Admin Message</button>
  <button class="action" onclick="reserve()">Add Reservation</button>
   
 
@@ -293,7 +294,25 @@ const messageBox = document.getElementById('adminGameMessage');
    document.getElementById('saveAdminMessageButton').style.display = 'none';
    alert('Admin message saved.');
    }
-  async function reserve() {
+ async function deleteAdminGameMessage() {
+  const pin = prompt('Enter admin PIN:');
+  if (!pin) return;
+  const { data, error } = await db.rpc('verify_admin_pin', { admin_pin: pin });
+  if (error || !data) {
+   alert('Incorrect admin PIN.');
+   return;
+   }
+  const gameId = document.getElementById('gameSelect').value;
+  if (!gameId) return;
+  const { error: deleteError } = await db.from('games').update({ admin_message: '' }).eq('id', gameId);
+  if (deleteError) {
+   alert('Could not delete admin message: ' + deleteError.message);
+   return;
+   }
+  document.getElementById('adminGameMessage').value = '';
+  alert('Admin message deleted.');
+  }
+ function reserve() {
   const name = document.getElementById("playerName").value.trim();
  const game = document.getElementById("gameSelect").value;
 const rideOption = document.getElementById("rideOption").value;
