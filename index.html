@@ -273,16 +273,14 @@ function showPage(id,btn){
   const gameId = document.getElementById('gameSelect').value;
   if (!gameId) return;
   const currentMessage = document.getElementById('adminGameMessage').value;
- const newMessage = prompt('Enter admin message for this game:', currentMessage);
-  if (newMessage === null) return;
-  const { error: updateError } = await db.from('games').update({ admin_message: newMessage }).eq('id', gameId);
-  if (updateError) {
-   alert('Could not save admin message: ' + updateError.message);
-   return;
-   }
-  document.getElementById('adminGameMessage').value = newMessage;
-  alert('Admin message saved.');
- loadGames();
+const messageBox = document.getElementById('adminGameMessage');
+  messageBox.readOnly = false;  
+  messageBox.focus();
+  
+  
+  
+ 
+ 
  }
  async function reserve() {
   const name = document.getElementById("playerName").value.trim();
