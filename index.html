@@ -155,6 +155,7 @@ Monday • 8:00 AM<br><br>
  <label>Admin Message / Notes</label>
  <textarea id="adminGameMessage" placeholder="Admin message for this game" readonly style="width:100%; min-height:50px; font-size:14px; line-height:1.4; padding:12px;"></textarea>
  <button type="button" onclick="editAdminGameMessage()">Edit Admin Message</button>
+ <button type="button" id="saveAdminMessageButton" onclick="saveAdminGameMessage()" style="display:none;">Save Admin Message</button>
  <button class="action" onclick="reserve()">Add Reservation</button>
   
 
@@ -276,13 +277,22 @@ function showPage(id,btn){
 const messageBox = document.getElementById('adminGameMessage');
   messageBox.readOnly = false;  
   messageBox.focus();
-  
-  
-  
- 
- 
- }
- async function reserve() {
+  document.getElementById('saveAdminMessageButton').style.display = '';  
+  async function saveAdminGameMessage() {  
+ const gameId = document.getElementById('gameSelect').value;
+   if (!gameId) return;
+   const messageBox = document.getElementById('adminGameMessage');
+   const newMessage = messageBox.value.trim();
+   const { error } = await db.from('games').update({ admin_message: newMessage }).eq('id', gameId);
+   if (error) {
+    alert('Could not save admin message: ' + error.message);
+    return;
+   }
+   messageBox.readOnly = true;
+   document.getElementById('saveAdminMessageButton').style.display = 'none';
+   alert('Admin message saved.');
+   }
+  async function reserve() {
   const name = document.getElementById("playerName").value.trim();
  const game = document.getElementById("gameSelect").value;
 const rideOption = document.getElementById("rideOption").value;
