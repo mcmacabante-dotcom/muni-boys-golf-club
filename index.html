@@ -312,7 +312,7 @@ const messageBox = document.getElementById('adminGameMessage');
   document.getElementById('adminGameMessage').value = '';
   alert('Admin message deleted.');
   }
- function reserve() {
+ async function reserve() {
   const name = document.getElementById("playerName").value.trim();
  const game = document.getElementById("gameSelect").value;
 const rideOption = document.getElementById("rideOption").value;
