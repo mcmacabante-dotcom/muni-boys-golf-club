@@ -277,8 +277,9 @@ function showPage(id,btn){
 const messageBox = document.getElementById('adminGameMessage');
   messageBox.readOnly = false;  
   messageBox.focus();
-  document.getElementById('saveAdminMessageButton').style.display = '';  
-  async function saveAdminGameMessage() {  
+  document.getElementById('saveAdminMessageButton').style.display = '';
+  }
+ async function saveAdminGameMessage() {  
  const gameId = document.getElementById('gameSelect').value;
    if (!gameId) return;
    const messageBox = document.getElementById('adminGameMessage');
