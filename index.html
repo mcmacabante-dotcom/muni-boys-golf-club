@@ -475,7 +475,7 @@ gameRow.appendChild(editButton);
    foursomeSelect.appendChild(option.cloneNode(true));
   });
  if (selectedGame) select.value = selectedGame;
-  if (selectedGame) loadSelectedGameAdminMessage();
+  loadSelectedGameAdminMessage();
  }
  async function addGame() {
   const pin = prompt('Enter admin PIN:'); if (!pin) return;
