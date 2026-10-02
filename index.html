@@ -656,7 +656,7 @@ if (reservationError) {
       .filter(p => p.foursome_id === f.id)
       .sort((a, b) => a.position - b.position);
 
-    let html = `<strong>Foursome ${f.group_number}</strong>— <span class="hole-assignment">Hole:</span><input type="text" value="${f.hole_assignment || ''}" placeholder="Example: 1A" style="width:70px;" onchange="saveHoleAssignment(${f.id}, this.value)">`;
+    let html = `<strong>Foursome ${f.group_number}</strong>— <span class="hole-assignment">Hole:</span><input class="hole-value" type="text"value="${f.hole_assignment || ''}" placeholder="Example: 1A" style="width:70px;" onchange="saveHoleAssignment(${f.id}, this.value)">`;
    for (let position = 1; position <= 4; position++) {
       const player = assigned.find(p => p.position === position);
       const member = player ? members.find(m => m.id === player.member_id) : null;
@@ -792,8 +792,11 @@ const filledFoursomes = Array.from(foursomeList.children).filter(box =>
           .hole-assignment {
   font-weight: 800;
 }
-
-        .player {
+.hole-value {
+  font-weight: 800;
+  font-size: 20px;
+}
+.player {
          padding: 2px 0;
          font-size: 13px;
          }
