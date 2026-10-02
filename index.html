@@ -656,7 +656,7 @@ if (reservationError) {
       .filter(p => p.foursome_id === f.id)
       .sort((a, b) => a.position - b.position);
 
-    let html = `<strong>Foursome ${f.group_number}</strong> — Hole: <input type="text" value="${f.hole_assignment || ''}" placeholder="Example: 1A" style="width:75px;" onchange="saveHoleAssignment(${f.id}, this.value)">`;
+    let html = `<strong>Foursome ${f.group_number}</strong> — Hole: <input type="text" value="${f.hole_assignment || ''}" placeholder="Example: 1A" style="width:70px;" onchange="saveHoleAssignment(${f.id}, this.value)">`;
    for (let position = 1; position <= 4; position++) {
       const player = assigned.find(p => p.position === position);
       const member = player ? members.find(m => m.id === player.member_id) : null;
