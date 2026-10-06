@@ -167,7 +167,8 @@ Monday • 8:00 AM<br><br>
 <div class="card">
 
 <h2>Current Reservations</h2>
-
+ <button type="button" onclick="printReservations()">Print Current Reservations</button>
+ 
 <div id="reservationList">
 
 
@@ -740,6 +741,34 @@ const playerCounts = {};
    choice.appendChild(option);
 });
 }
+ 
+function printReservations() {
+const reservationList = document.getElementById('reservationList');
+ const gameSelect = document.getElementById('gameSelect');
+ const gameText = gameSelect.options[gameSelect.selectedIndex]?.text || 'Golf Game';
+ const printWindow = window.open('', '_blank');
+ const reservationsHTML = reservationList.innerHTML;
+ printWindow.document.write(`
+ <html>
+ <head>
+ <title>${gameText} - Current Reservations</title>
+ <style>
+ body {
+ font-family: Arial, sans-serif;
+ padding: 24px;
+ }
+ </style> 
+ </head>
+ <body>
+ <h1>Current Reservations</h1>
+<h2>${gameText}</h2>
+${reservationsHTML}
+</body>
+</html>
+`);
+ printWindow.document.close();
+ printWindow.print();
+ }
  function printFoursomes() {
   const gameSelect = document.getElementById('foursomeGameSelect');
   const foursomeList = document.getElementById('foursomeList');
