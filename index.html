@@ -747,7 +747,10 @@ const reservationList = document.getElementById('reservationList');
  const gameSelect = document.getElementById('gameSelect');
  const gameText = gameSelect.options[gameSelect.selectedIndex]?.text || 'Golf Game';
  const printWindow = window.open('', '_blank');
- const reservationsHTML = reservationList.innerHTML;
+ const reservationsHTML = reservationList.cloneNode(true);
+ reservationsHTML.querySelectorAll('button').forEach(button => button.remove());
+ reservationsHTML.querySelectorAll('.reservation-actions').forEach(el => el.remove());
+ reservationsHTML.querySelectorAll('.game-date, .course-name').forEach(el => el.remove());
  printWindow.document.write(`
  <html>
  <head>
@@ -761,7 +764,7 @@ const reservationList = document.getElementById('reservationList');
  </head>
  <body>
  <h1>Current Reservations</h1>
-<h2>${gameText}</h2>
+
 ${reservationsHTML}
 </body>
 </html>
