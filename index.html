@@ -1525,7 +1525,7 @@ let gamePlayerNumber = 0;
    actions.className = 'reservation-actions';
    const editButton = document.createElement('button');
    editButton.textContent = 'Edit';
-   editButton.onclick = () => editReservation(r);
+   editButton.onclick = () => editReservation(r.id, r.ride_option, r.notes);
    actions.appendChild(editButton);
    const cancelButton = document.createElement('button');
    cancelButton.textContent = 'Cancel';
