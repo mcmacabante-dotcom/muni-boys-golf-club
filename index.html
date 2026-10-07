@@ -760,11 +760,22 @@ const reservationList = document.getElementById('reservationList');
  font-family: Arial, sans-serif;
  padding: 24px;
  }
- </style> 
+ .reservation-columns {
+  display: grid;
+  grid-template-columns: 1fr 45px 45px 45px 45px 45px;
+  font-weight: bold;
+  border-bottom: 1px solid #000;
+  margin-bottom: 4px;
+}
+
+.reservation-columns span {
+  text-align: center;
+}
+</style> 
  </head>
  <body>
  <h1>Current Reservations</h1>
-
+<div class="reservation-columns"><span></span><span>Pot</span><span>CP</span><span>Qual</span><span>Cash</span><span>Rcpt</span></div>
 ${reservationsHTML.innerHTML}
 </body>
 </html>
