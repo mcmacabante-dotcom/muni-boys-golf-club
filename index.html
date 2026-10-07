@@ -754,8 +754,8 @@ const reservationList = document.getElementById('reservationList');
  reservationsHTML.querySelectorAll('.reservation-actions').forEach(el => el.remove());
  reservationsHTML.querySelectorAll('.game-date, .course-name').forEach(el => el.remove());
  reservationsHTML.querySelectorAll('.reservation-columns').forEach(row => {
-  row.insertAdjacentHTML('afterbegin), '<span>☐</span><span>☐</span><span>☐</span><span>☐</span><span>☐</span>');
-  });
+row.innerHTML = row.innerHTML.replace('</span>', '<span>□</span><span>□</span><span>□</span><span>□</span><span>□</span></span>');
+ });
  printWindow.document.write(`
  <html>
  <head>
