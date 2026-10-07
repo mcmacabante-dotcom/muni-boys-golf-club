@@ -784,7 +784,7 @@ reservationsHTML.querySelectorAll('.player').forEach(player => player.insertAdja
   margin-bottom: 4px;
 }
 .player { font-size: 11px; line-height: 1.05; padding: 0; margin: 0; }
-.print-checks { float: right; width: 225px; display: flex; justify-content: space-around; }
+.print-checks { float: right; width: 225px; display: grid; grid-template-columns: repeat(5, 45px); text-align: center; }
 </style> 
  </head>
  <body>
