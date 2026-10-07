@@ -765,7 +765,7 @@ const reservationList = document.getElementById('reservationList');
  reservationsHTML.querySelectorAll('button').forEach(button => button.remove());
  reservationsHTML.querySelectorAll('.reservation-actions').forEach(el => el.remove());
  reservationsHTML.querySelectorAll('.game-date, .course-name').forEach(el => el.remove());
-reservationsHTML.querySelectorAll('.player').forEach(player => player.insertAdjacentHTML('beforeend', '<span class="print-checks">□ □ □ □ □</span>'));
+reservationsHTML.querySelectorAll('.player').forEach(player => player.insertAdjacentHTML('beforeend', '<span class="print-checks">☐ ☐ ☐ ☐ ☐</span>'));
  
  printWindow.document.write(`
  <html>
