@@ -1521,6 +1521,18 @@ let gamePlayerNumber = 0;
    const row = document.createElement('div');
     row.className = 'player';
   row.innerHTML = `<span> ${gamePlayerNumber}.${r.player_name}${r.ride_option ? ' — ' + r.ride_option : ''}${r.notes ? '<br><strong>Notes:</strong> ' + r.notes : ''}</span>`; list.appendChild(row);
+   const actions = document.createElement('div');
+   actions.className = 'reservation-actions';
+   const editButton = document.createElement('button');
+   editButton.textContent = 'Edit';
+   editButton.onclick = () => editReservation(r);
+   actions.appendChild(editButton);
+   const cancelButton = document.createElement('button');
+   cancelButton.textContent = 'Cancel';
+   cancelButton.onclick = () => cancelReservation(r.id);
+   actions.appendChild(cancelButton);
+   row.appendChild(actions);
+   list.appendChild(row);
   });
 }
 async function loadMembers() {
