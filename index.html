@@ -765,7 +765,7 @@ const reservationList = document.getElementById('reservationList');
  reservationsHTML.querySelectorAll('button').forEach(button => button.remove());
  reservationsHTML.querySelectorAll('.reservation-actions').forEach(el => el.remove());
  reservationsHTML.querySelectorAll('.game-date, .course-name').forEach(el => el.remove());
-reservationsHTML.querySelectorAll('.player').forEach(player => player.insertAdjacentHTML('beforeend', '<span class="print-checks">☐ ☐ ☐ ☐ ☐</span>'));
+reservationsHTML.querySelectorAll('.player').forEach(player => player.insertAdjacentHTML('beforeend', '<span class="print-checks"><i></i><i></i><i></i><i></i><i></i></span>'));
  
  printWindow.document.write(`
  <html>
@@ -785,6 +785,7 @@ reservationsHTML.querySelectorAll('.player').forEach(player => player.insertAdja
 }
 .player { font-size: 11px; line-height: 1.05; padding: 0; margin: 0; }
 .print-checks { float: right; width: 225px; display: grid; grid-template-columns: repeat(5, 45px); text-align: center; }
+.print-checks i { width: 9px; height: 9px; border: 1px solid #000; display: inline-block; box-sizing: border-box; }
 </style> 
  </head>
  <body>
