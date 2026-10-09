@@ -76,7 +76,43 @@ footer{text-align:center;padding:25px;color:#777;font-size:14px}
 
 <main>
 
+<section id="home">
 
+<div class="card">
+
+<h2>Club Dashboard</h2>
+
+<div class="grid">
+
+<div class="stat"><div class="big">300</div>Members</div>
+
+<div class="stat"><div class="big">60</div>Players / Game</div>
+
+<div class="stat"><div class="big">3</div>Games / Week</div>
+
+<div class="stat"><div class="big">15</div>Foursomes</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>Next Game</h2>
+
+<div class="game" id="nextGame">
+
+Monday • 8:00 AM<br><br>
+
+<span id="count">4 players currently listed</span>
+
+</div>
+
+<button class="action" onclick="showPage('reservations')">Reserve a Spot</button>
+
+</div>
+
+</section>
 
 <section id="games" class="hidden">
 
@@ -177,7 +213,17 @@ footer{text-align:center;padding:25px;color:#777;font-size:14px}
 
 </main>
 
+<footer>
 
+MuniBoys And Friends Golf Club of LV<br>
+
+Member scheduling system<br> 
+
+ Manny C Macabante<br>
+ 
+ 702-528-3846(Text Only)
+ 
+</footer>
 
 <script>
 
@@ -739,6 +785,1146 @@ const reservationList = document.getElementById('reservationList');
 }
 
 
+</style> 
+ </head>
+ <body>
+ <h1>Current Reservations</h1>
+<div class="reservation-columns"><span></span><span>Pot</span><span>CP</span><span>Qual</span><span>Cash</span><span>Rcpt</span></div>
+${reservationsHTML.innerHTML}
+</body>
+</html>
+`);
+ printWindow.document.close();
+ printWindow.print();
+ }
+ function printFoursomes() {
+  const gameSelect = document.getElementById('foursomeGameSelect');
+  const foursomeList = document.getElementById('foursomeList');
+const filledFoursomes = Array.from(foursomeList.children).filter(box =>
+  Array.from(box.querySelectorAll('.player')).some(row =>
+    row.querySelector('button')?.textContent.trim() === 'Move'
+  )
+);
+  const gameText = gameSelect.options[gameSelect.selectedIndex]?.text || 'Golf Game';
+
+  const printWindow = window.open('', '_blank');
+
+  printWindow.document.write(`
+    <html>
+    <head>
+      <title>${gameText} - Foursomes</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          padding: 24px;
+          color: #000;
+        }
+
+        h1 {
+          text-align: center;
+          margin-bottom: 6px;
+        }
+
+        h2 {
+          text-align: center;
+          margin-top: 0;
+          margin-bottom: 24px;
+          font-size: 18px;
+        }
+
+        .foursome {
+          border: 1px solid #000;
+          padding: 5px;
+         margin-bottom: 6px;
+         break-inside: avoid;
+        }
+
+        .foursome strong {
+          display: block;
+          font-size: 16px;
+          
+          margin-bottom: 4px;
+          }
+
+          .hole-assignment {
+  font-weight: 800;
+}
+.hole-value {
+  font-weight: 800;
+  font-size: 20px;
+}
+.player {
+         padding: 2px 0;
+         font-size: 13px;
+         }
+
+        button {
+          display: none;
+        }
+
+        .player::before {
+          content: "☐ ";
+        }
+.foursome:nth-child(10n + 1) {
+  break-before: page;
+}
+.foursomes-print {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  grid-auto-rows: 1fr;
+  max-height: 9in;
+  }        
+      </style>
+    </head>
+    <body>
+      <h1>MuniBoys And Friends of Las Vegas</h1>
+      <h2>${gameText}</h2>
+    <div class="foursomes-print">${filledFoursomes.map(box => box.outerHTML).join('')}</div>
+    </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+} 
+ async function startMove(playerAssignmentId) {
+const selectedGameId = Number(document.getElementById('foursomeGameSelect')?.value || 1); 
+ const { data: groups, error: groupsError } = await db    .from('foursomes')
+    .select('id, group_number')
+   .eq('game_id', selectedGameId)   
+   .order('group_number');
+
+  if (groupsError || !groups || groups.length === 0) {
+    alert('Could not load foursomes.');
+    return;
+  }
+
+  const targetGroup = await new Promise(resolve => {
+    const overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.inset = '0';
+    overlay.style.background = 'rgba(0,0,0,0.45)';
+    overlay.style.zIndex = '9999';
+    overlay.style.display = 'flex';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+    overlay.style.padding = '20px';
+
+    const panel = document.createElement('div');
+    panel.style.background = 'white';
+    panel.style.borderRadius = '20px';
+    panel.style.padding = '20px';
+    panel.style.width = '100%';
+    panel.style.maxWidth = '420px';
+    panel.style.maxHeight = '80vh';
+    panel.style.overflowY = 'auto';
+
+    const title = document.createElement('h3');
+    title.textContent = 'Move to which foursome?';
+    title.style.marginTop = '0';
+    panel.appendChild(title);
+
+    const grid = document.createElement('div');
+    grid.style.display = 'grid';
+    grid.style.gridTemplateColumns = 'repeat(3, 1fr)';
+    grid.style.gap = '10px';
+
+    groups.forEach(group => {
+      const button = document.createElement('button');
+      button.textContent = 'Foursome ' + group.group_number;
+      button.style.padding = '14px 8px';
+      button.style.fontSize = '16px';
+      button.style.borderRadius = '12px';
+
+      button.onclick = () => {
+        overlay.remove();
+        resolve(group);
+      };
+
+      grid.appendChild(button);
+    });
+
+    panel.appendChild(grid);
+
+    const cancel = document.createElement('button');
+    cancel.textContent = 'Cancel';
+    cancel.style.width = '100%';
+    cancel.style.marginTop = '15px';
+    cancel.style.padding = '14px';
+    cancel.style.fontSize = '16px';
+    cancel.style.borderRadius = '12px';
+
+    cancel.onclick = () => {
+      overlay.remove();
+      resolve(null);
+    };
+
+    panel.appendChild(cancel);
+    overlay.appendChild(panel);
+    document.body.appendChild(overlay);
+  });
+
+  if (!targetGroup) return;
+
+  const { data: occupied, error: occupiedError } = await db
+    .from('foursome_players')
+    .select('position')
+    .eq('foursome_id', targetGroup.id);
+
+  if (occupiedError) {
+    alert('Could not check available positions.');
+    return;
+  }
+
+  const used = occupied.map(p => p.position);
+  const targetPosition = [1, 2, 3, 4].find(p => !used.includes(p));
+
+  if (!targetPosition) {
+    alert('That foursome is full.');
+    return;
+  }
+
+  const pin = prompt('Enter admin PIN:');
+  if (!pin) return;
+
+  await movePlayer(
+    playerAssignmentId,
+    targetGroup.id,
+    targetPosition,
+    pin
+  );
+}
+ async function movePlayer(playerAssignmentId, targetFoursomeId, targetPosition, pin) {
+  const { data, error } = await db.rpc('admin_move_player', {
+    player_assignment_id: playerAssignmentId,
+    target_foursome_id: targetFoursomeId,
+    target_position: targetPosition,
+    admin_pin: pin
+  });
+
+  if (error) {
+    alert('Could not move player: ' + error.message);
+    return false;
+  }
+
+  if (!data) {
+    alert('Incorrect admin PIN or player could not be moved.');
+    return false;
+  }
+
+  await loadFoursomes();
+  return true;
+}
+async function assign_player(name, gameId, rideOption, foursomeChoice, notes) { 
+ const { data: existing, error: checkError } = await db.rpc('get_reservations');
+
+if (checkError) {
+  alert('Could not check existing reservations.');
+  return false;
+}
+
+
+  const { data: gameInfo, error: gameInfoError } = await db
+  .from('games')
+  .select('player_limit')
+  .eq('id', Number(gameId))
+  .single();
+
+if (gameInfoError) {
+  alert('Could not check the player limit.');
+  return false;
+}
+
+const reservedCount = existing.filter(r => r.game_id === Number(gameId)).length;
+
+if (reservedCount >= gameInfo.player_limit) {
+  alert('This game is full. The player limit has been reached.');
+  return false;
+}
+  const { data, error } = await db.rpc('reserve_by_name', {
+    p_name: name,
+    p_game_id: Number(gameId),
+   p_ride_option: rideOption,
+ p_foursome_choice: Number(foursomeChoice),
+   p_notes: notes
+  });
+
+  if (error) {
+    console.log('Reservation error:', error);
+    alert('Reservation error: ' + error.message);
+   return false;
+  }
+
+  if (!data) {
+   alert('Reservation could not be saved. Please check the member name, game limit, and foursome availability.');
+   return false;
+  }
+
+  alert('Reservation saved!');
+ window.foursomeWasChosen = false;
+ window.selectedFoursomeId = null;
+ await loadReservations();
+ return true;
+}
+ 
+ async function editReservation(id, currentRide, currentNotes) {
+  const pin = prompt('Enter Admin PIN:');
+  if (!pin) return;
+
+  const rideOption = prompt(
+    'Enter Walking or Riding:',
+    currentRide || ''
+  );
+  if (rideOption === null) return;
+
+  const notes = prompt(
+    'Edit Notes / Requests:',
+    currentNotes || ''
+  );
+  if (notes === null) return;
+
+  const { data, error } = await db.rpc('admin_edit_reservation', {
+    reservation_id: Number(id),
+    new_ride_option: rideOption.trim(),
+    new_notes: notes.trim(),
+    admin_pin: pin
+  });
+
+  if (error) {
+    alert('Could not edit reservation: ' + error.message);
+    return;
+  }
+
+  if (!data) {
+    alert('Incorrect Admin PIN or reservation not found.');
+    return;
+  }
+
+  alert('Reservation updated.');
+  await loadReservations();
+}
+ async function cancelReservation(id) {
+  if (!confirm('Cancel this reservation?')) return;
+
+  const pin = prompt('Enter Admin PIN:');
+  if (!pin) return;
+
+  const { data, error } = await db.rpc('admin_cancel_reservation', {
+    reservation_id: Number(id),
+    admin_pin: pin
+  });
+
+  if (error) {
+    alert('Cancellation failed.');
+    return;
+  }
+
+  if (!data) {
+    alert('Incorrect Admin PIN or reservation not found.');
+    return;
+  }
+
+  alert('Reservation cancelled.');
+  await loadReservations();
+}
+ 
+ 
+ 
+ async function testDatabase() {
+  const { data, error } = await db
+    .from('signups')
+    .select('*');
+
+  if (error) {
+    console.log('Database error:', error);
+    alert('Database connection error');
+  } else {
+    console.log('Real signups:', data);
+    alert('Database connected! Found ' + data.length + ' signup(s).');
+  }
+}
+loadGames();
+
+ async function addMember() {
+  const name = prompt('Enter new member name:');
+  if (!name || !name.trim()) return;
+
+  const pin = prompt('Enter admin PIN:');
+  if (!pin) return;
+
+  const { data, error } = await db.rpc('admin_add_member', {
+    member_name: name.trim(),
+    admin_pin: pin
+  });
+
+  if (error) {
+    alert('Could not add member: ' + error.message);
+    return;
+  }
+
+  if (!data) {
+    alert('Incorrect admin PIN or member could not be added.');
+    return;
+  }
+
+  alert('Member added successfully!');
+  await loadMembers();
+}
+ async function deleteMember(memberId, memberName) {
+  const confirmed = confirm('Delete ' + memberName + ' from the Member Directory?');
+  if (!confirmed) return;
+
+  const pin = prompt('Enter admin PIN:');
+  if (!pin) return;
+
+  const { data, error } = await db.rpc('admin_delete_member', {
+    member_id: memberId,
+    admin_pin: pin
+  });
+
+  if (error) {
+    alert('Could not delete member: ' + error.message);
+    return;
+  }
+
+  if (!data) {
+    alert('Incorrect admin PIN or member could not be deleted.');
+    return;
+  }
+
+  alert('Member deleted successfully!');
+  await loadMembers();
+}
+ setInterval(() => {
+
+  loadReservations();
+  loadFoursomeChoices();
+  
+  
+  }, 10000);
+</script> 
+</body>
+
+</html>
+<button onclick="showPage('games',this)">Games</button>
+
+<button onclick="showPage('reservations',this)">Reservations</button>
+
+<button onclick="showPage('pairings',this); loadFoursomes();">Foursomes</button>
+ <button onclick="organizerAccess()">Organizer</button>
+<button class="organizer-only" style="display:none" onclick="showPage('members',this)">Members</button></nav>
+
+<main>
+
+<section id="home">
+
+<div class="card">
+
+<h2>Club Dashboard</h2>
+
+<div class="grid">
+
+<div class="stat"><div class="big">300</div>Members</div>
+
+<div class="stat"><div class="big">60</div>Players / Game</div>
+
+<div class="stat"><div class="big">3</div>Games / Week</div>
+
+<div class="stat"><div class="big">15</div>Foursomes</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>Next Game</h2>
+
+<div class="game" id="nextGame">
+
+Monday • 8:00 AM<br><br>
+
+<span id="count">4 players currently listed</span>
+
+</div>
+
+<button class="action" onclick="showPage('reservations')">Reserve a Spot</button>
+
+</div>
+
+</section>
+
+<section id="games" class="hidden">
+
+<div class="card">
+
+<h2>Upcoming Games</h2>
+<input id="newCourseName" placeholder="Enter golf course">
+
+ <input id="newGameDate" type="date">
+ <input id="newPlayerLimit" type="number" min="1"  placeholder="Player Limit">
+ <button id="gameActionButton" class="action" onclick="addGame()">Add Game</button>
+ <div id="gamesList"></div>
+ </div>
+</section>
+
+<section id="reservations" class="hidden">
+
+<div class="card">
+
+<h2>Player Reservation</h2>
+
+<label>Player Name</label>
+
+<input id="playerName" placeholder="Enter player name">
+
+<label>Select Game</label>
+
+<select id="gameSelect"onchange="loadReservations(); loadFoursomeChoices(); loadSelectedGameAdminMessage()" onclick="loadFoursomeChoices()"> </select>
+
+ <label>Walk or Cart</label>
+<select id="rideOption">
+  <option value="Walk">Walk</option>
+  <option value="Cart">Cart</option>
+</select>
+<button type="button" class="foursome-choice" onclick="openFoursomeChooser()">View Foursomes and Choose</button>
+
+ <label>Notes / Requests</label>
+ <textarea id="reservationNotes" placeholder="Enter any notes or special requests" style="width:100%; min-height:50px; font-size:14px; line-height:1.4; padding:12px;"></textarea>
+ 
+ <label>Admin Message / Notes</label>
+ <textarea id="adminGameMessage" placeholder="Admin message for this game" readonly style="width:100%; min-height:50px; font-size:16px; line-height:1.4; padding:12px;"></textarea>
+ <button type="button" onclick="editAdminGameMessage()">Admin Message</button>
+ <button type="button" id="saveAdminMessageButton" onclick="saveAdminGameMessage()" style="display:none;">Save Admin Message</button>
+ <button type="button" onclick="deleteAdminGameMessage()">Delete Message</button>
+ <button class="action" onclick="reserve()">Add Reservation</button>
+  
+
+<p id="message"></p>
+
+</div>
+
+<div class="card">
+
+<h2>Current Reservations</h2>
+ <button type="button" onclick="printReservations()">Print Current Reservations</button>
+ 
+<div id="reservationList">
+
+
+
+</div>
+
+</div>
+
+</section>
+
+<section id="pairings" class="hidden">
+
+<div class="card">
+
+<h2>Foursome Pairings</h2>
+
+<p>Organizer view for creating and arranging groups.</p>
+ <label for="foursomeGameSelect"><strong>Select Game</strong></label>
+<select id="foursomeGameSelect" onchange="loadFoursomes()"></select>
+ <button type="button" class="action" onclick="printFoursomes()">Print Foursomes</button>
+ <div id="foursomeList"></div>
+</div>
+</section>
+ 
+
+<section id="members" class="hidden">
+
+<div class="card">
+
+<h2>Member Directory</h2>
+
+<input id="search" placeholder="Search member" onkeyup="filterMembers()">
+
+ <button type="button" onclick="addMember()">+ Add Member</button>
+<div id="memberList">
+
+<p id="memberLoading">Loading members...</p>
+
+</div>
+
+</section>
+
+</main>
+
+<footer>
+
+MuniBoys And Friends Golf Club of LV<br>
+
+Member scheduling system<br> 
+
+ Manny C Macabante<br>
+ 
+ 702-528-3846(Text Only)
+ 
+</footer>
+
+<script>
+
+function showPage(id,btn){
+
+ document.querySelectorAll("main section").forEach(x=>x.classList.add("hidden"));
+
+ document.getElementById(id).classList.remove("hidden");
+
+ document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
+
+ if(btn)btn.classList.add("active");
+
+ window.scrollTo(0,0);
+
+}
+
+ async function organizerAccess() {
+  const pin = prompt('Enter admin PIN:');
+  if (!pin) return;
+
+  const { data, error } = await db.rpc('verify_admin_pin', {
+    admin_pin: pin
+  });
+
+  if (error) {
+    alert('Could not verify admin PIN.');
+    return;
+  }
+
+  if (!data) {
+    alert('Incorrect admin PIN.');
+    return;
+  }
+
+  document.querySelectorAll('.organizer-only').forEach(btn => {
+    btn.style.display = '';
+  });
+
+  alert('Organizer controls unlocked.');
+}
+ async function editAdminGameMessage() {
+  const pin = prompt('Enter admin PIN:');
+  if (!pin) return;
+  const { data, error } = await db.rpc('verify_admin_pin', { admin_pin: pin });
+  if (error || !data) {
+   alert('Incorrect admin PIN.');
+   return;
+   }
+  const gameId = document.getElementById('gameSelect').value;
+  if (!gameId) return;
+  const currentMessage = document.getElementById('adminGameMessage').value;
+const messageBox = document.getElementById('adminGameMessage');
+  messageBox.readOnly = false;  
+  messageBox.focus();
+  document.getElementById('saveAdminMessageButton').style.display = '';
+  }
+ async function saveAdminGameMessage() {  
+ const gameId = document.getElementById('gameSelect').value;
+   if (!gameId) return;
+   const messageBox = document.getElementById('adminGameMessage');
+   const newMessage = messageBox.value.trim();
+   const { error } = await db.from('games').update({ admin_message: newMessage }).eq('id', gameId);
+   if (error) {
+    alert('Could not save admin message: ' + error.message);
+    return;
+   }
+   messageBox.readOnly = true;
+   document.getElementById('saveAdminMessageButton').style.display = 'none';
+   alert('Admin message saved.');
+   }
+ async function deleteAdminGameMessage() {
+  const pin = prompt('Enter admin PIN:');
+  if (!pin) return;
+  const { data, error } = await db.rpc('verify_admin_pin', { admin_pin: pin });
+  if (error || !data) {
+   alert('Incorrect admin PIN.');
+   return;
+   }
+  const gameId = document.getElementById('gameSelect').value;
+  if (!gameId) return;
+  const { error: deleteError } = await db.from('games').update({ admin_message: '' }).eq('id', gameId);
+  if (deleteError) {
+   alert('Could not delete admin message: ' + deleteError.message);
+   return;
+   }
+  document.getElementById('adminGameMessage').value = '';
+  alert('Admin message deleted.');
+  }
+ async function reserve() {
+  const name = document.getElementById("playerName").value.trim();
+ const game = document.getElementById("gameSelect").value;
+const rideOption = document.getElementById("rideOption").value;
+  const notes = document.getElementById("reservationNotes").value.trim();
+  const foursomeChoice = window.selectedFoursomeId || document.getElementById("foursomeChoice")?.value;
+  if (!name) {
+    document.getElementById("message").innerText = "Please enter a player name.";
+    return;
+  }
+  if (!window.foursomeWasChosen) {
+  document.getElementById("message").innerText = "Please click View Foursomes and Choose, then choose your foursome.";
+  return;
+}
+  if (!foursomeChoice) {
+  document.getElementById("message").innerText = "Please choose a foursome.";
+  return;
+}
+const success = await assign_player(name, game, rideOption, foursomeChoice, notes);
+  if (success) {
+    document.getElementById("message").innerText = name + " has been added.";
+    document.getElementById("playerName").value = "";
+   document.getElementById("reservationNotes").value = "";
+  }
+} 
+
+function filterMembers(){
+
+ let q=document.getElementById("search").value.toLowerCase();
+
+ document.querySelectorAll("#memberList .player").forEach(x=>{
+
+  x.style.display=x.innerText.toLowerCase().includes(q)?"flex":"none";
+
+ });
+
+}
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script> 
+const SUPABASE_KEY = 'sb_publishable_f2o73UN2JVnZNJjfudjNEw_BhxU_qrY';
+const SUPABASE_URL = 'https://iwxfbdjgzzynhjdzvhjq.supabase.co';
+ const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+ console.log("Supabase connected", db);
+ 
+ loadReservations();
+loadGames().then(loadFoursomes);
+ loadMembers();
+ async function loadReservations() {
+  const list = document.getElementById('reservationList');
+  const selectedGameId = Number(document.getElementById('gameSelect')?.value || 0);
+  const { data, error } = await db.rpc('get_reservations');
+
+  if (error) {
+  alert('Reservation list error: ' + error.message);
+  return;
+  }
+
+  list.innerHTML = '';
+let gamePlayerNumber = 0;
+  data.forEach((r, index) => {
+   if (selectedGameId && Number(r.game_id) !== selectedGameId) return;
+   gamePlayerNumber++;
+   const row = document.createElement('div');
+    row.className = 'player';
+  row.innerHTML = `<span> ${gamePlayerNumber}.${r.player_name}${r.ride_option ? ' — ' + r.ride_option : ''}${r.notes ? '<br><strong>Notes:</strong> ' + r.notes : ''}</span>`; list.appendChild(row);
+   const actions = document.createElement('div');
+   actions.className = 'reservation-actions';
+   const editButton = document.createElement('button');
+   editButton.textContent = 'Edit';
+   editButton.onclick = () => editReservation(r.signup_id, r.ride_option, r.notes);
+   actions.appendChild(editButton);
+   const cancelButton = document.createElement('button');
+   cancelButton.textContent = 'Cancel';
+   cancelButton.onclick = () => cancelReservation(r.signup_id);
+   actions.appendChild(cancelButton);
+   row.appendChild(actions);
+   list.appendChild(row);
+  });
+}
+async function loadMembers() {
+ const list = document.getElementById('memberList');
+ if (!list) return;
+
+  const { data, error } = await db
+    .from('members')
+    .select('id, name')
+    .order('name');
+
+  if (error) return;
+
+  list.innerHTML = '';
+
+  data.forEach((member, index) => {
+   const row = document.createElement('div');
+    row.className = 'player';
+   row.textContent = `${index + 1}. ${member.name}`;
+   
+const deleteButton = document.createElement('button');
+deleteButton.textContent = 'Delete';
+deleteButton.onclick = () => deleteMember(member.id, member.name);
+row.appendChild(deleteButton);
+
+list.appendChild(row);  });
+}
+async function loadSelectedGameAdminMessage() {
+  const gameId = document.getElementById('gameSelect').value;
+  const box = document.getElementById('adminGameMessage');
+
+  if (!gameId || !box) return;
+
+  const { data, error } = await db
+    .from('games')
+    .select('admin_message')
+    .eq('id', gameId)
+    .single();
+
+  if (error) {
+    box.value = '';
+    return;
+  }
+
+  box.value = data?.admin_message || '';
+} 
+ async function loadGames() {
+  const select = document.getElementById('gameSelect');
+ const foursomeSelect = document.getElementById('foursomeGameSelect');
+ const gamesList = document.getElementById('gamesList');
+ if (!select) return;
+
+  const { data: games, error } = await db
+    .from('games')
+   .select('id, course_name, game_date, max_players, admin_message')
+   .order('game_date');
+
+  if (error) {
+    alert('Could not load games: ' + error.message);
+    return;
+  }
+const nextGameBox = document.getElementById('nextGame');
+
+if (nextGameBox && games.length > 0) {
+  const nextGame = games[0];
+
+  const nextDate = new Date(nextGame.game_date + 'T00:00:00');
+  const nextDateText = nextDate.toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'short',
+    day: 'numeric'
+  });
+
+  nextGameBox.innerHTML = `
+    <strong>${nextGame.course_name}</strong><br>
+    ${nextDateText}<br><br>
+  `;
+}  const selectedGame = select.value;
+ select.innerHTML = '';
+ const { data: gameReservations, error: reservationCountError } =
+  await db.rpc('get_reservations');
+
+if (reservationCountError) {
+  alert('Could not load reservation counts.');
+  return;
+}
+ select.innerHTML = '';
+ foursomeSelect.innerHTML = '';
+ gamesList.innerHTML = '';
+ games.forEach(game => {
+    const option = document.createElement('option');
+    option.value = game.id;
+
+    const date = new Date(game.game_date + 'T00:00:00');
+    const dateText = date.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric'
+    });
+const reservationCount = gameReservations.filter(
+  r => Number(r.game_id) === Number(game.id)
+).length;
+  option.textContent = `${dateText} - ${game.course_name}`;
+  const gameRow = document.createElement('div');
+gameRow.textContent = `${dateText} – ${game.course_name} – ${reservationCount} players reserved — Limit: ${game.max_players || 60}`;
+  gameRow.style.cursor = 'pointer';
+  gameRow.onclick = () => {
+  select.value = game.id;
+   document.getElementById('adminGameMessage').value = game.admin_message || '';
+   showPage('reservations', null);
+};
+  const editButton = document.createElement('button');
+editButton.textContent = 'Edit';
+  editButton.onclick = () => editGame(game.id, game.course_name, game.game_date, game.max_players);
+  const deleteButton = document.createElement('button');
+  deleteButton.textContent = 'Delete';
+deleteButton.onclick = () => deleteGame(game.id, game.course_name);
+gameRow.appendChild(editButton);
+  gameRow.appendChild(deleteButton);
+  gamesList.appendChild(gameRow);
+  select.appendChild(option);
+   foursomeSelect.appendChild(option.cloneNode(true));
+  });
+ if (selectedGame) select.value = selectedGame;
+  loadSelectedGameAdminMessage();
+ }
+ async function addGame() {
+  const pin = prompt('Enter admin PIN:'); if (!pin) return;
+  const courseName = document.getElementById('newCourseName').value.trim();
+  const gameDate = document.getElementById('newGameDate').value;
+  const playerLimit = parseInt(document.getElementById('newPlayerLimit').value, 10) || 60;
+  if (!courseName || !gameDate) {
+   alert('Please enter a golf course and date.');
+   return;
+   }
+  const { data: newGameId, error } = await db.rpc('admin_add_game', {
+  p_course_name: courseName,
+  p_game_date: gameDate,
+  admin_pin: pin,
+   p_player_limit: playerLimit
+  });
+if (error) {
+  alert('Could not add game.');
+  return;
+}
+
+if (!newGameId) {
+  alert('Incorrect admin PIN.');
+  return;
+}
+const newFoursomes = [];
+for (let i = 1; i <= 18; i++) {
+  newFoursomes.push({
+ game_id: newGameId,
+   group_number: i
+  });
+}
+
+const { error: foursomeError } = await db
+  .from('foursomes')
+  .insert(newFoursomes);
+
+if (foursomeError) {
+  alert('Game was added, but the 18 foursomes could not be created.');
+  return;
+}
+  document.getElementById('newCourseName').value = '';
+  document.getElementById('newGameDate').value = '';
+  await loadGames();
+  alert('Game added successfully!');
+ }
+
+
+ async function editGame(gameId, courseName, gameDate, playerLimit) {
+  const pin = prompt('Enter admin PIN:');
+  if (!pin) return;
+
+  const newCourseName = prompt('Golf course:', courseName);
+  if (newCourseName === null) return;
+
+  const newGameDate = prompt('Game date (YYYY-MM-DD):', gameDate);
+  if (newGameDate === null) return;
+
+  const newPlayerLimit = prompt('Player limit:', playerLimit || 60);
+  if (newPlayerLimit === null) return;
+
+ const { data, error } = await db.rpc('admin_edit_game', {
+  game_id: gameId,
+  p_course_name: newCourseName.trim(),
+  p_game_date: newGameDate,
+  p_player_limit: parseInt(newPlayerLimit, 10),
+  admin_pin: pin
+});
+  if (error) {
+  alert('Could not edit game.');
+  return;
+}
+
+if (data !== true) {
+  alert('Incorrect admin PIN or game could not be updated.');
+  return;
+}
+
+await loadGames();
+alert('Game updated successfully!');
+ }
+ async function deleteGame(gameId, courseName) {
+  const pin = prompt('Enter admin PIN:');
+if (!pin) return;
+  const ok = confirm('Delete ' + courseName + '?');
+  if (!ok) return;
+
+const { data, error } = await db.rpc('admin_delete_game', {
+  game_id: gameId,
+  admin_pin: pin
+});
+  if (error) {
+    alert('Could not delete game.');
+    return;
+  }
+
+ if (data !== true) {
+  alert('Incorrect admin PIN.');
+  return;
+}  
+  await loadGames();
+  alert('Game deleted successfully!');
+}
+ async function loadFoursomes() {
+  const list = document.getElementById('foursomeList');
+  if (!list) return;
+const selectedGameId = Number(document.getElementById('foursomeGameSelect')?.value || 1);
+  list.innerHTML = '';
+
+  const { data: foursomes, error: foursomeError } = await db
+    .from('foursomes')
+   .select('id, group_number, hole_assignment')
+   .eq('game_id', selectedGameId)
+    .order('group_number');
+
+  if (foursomeError) {
+    list.innerHTML = '<p>Could not load foursomes.</p>';
+    return;
+  }
+
+  const { data: players, error: playerError } = await db
+  .from('foursome_players')
+  .select('id, foursome_id, member_id, position')
+  .order('position');
+
+if (playerError) {
+  list.innerHTML = '<p>Could not load players.</p>';
+  return;
+}
+
+const { data: members, error: memberError } = await db
+  .from('members')
+  .select('id, name');
+
+if (memberError) {
+ list.innerHTML = '<p>Member error: ' + memberError.message + '</p>'; 
+  return;
+}
+const { data: reservations, error: reservationError } = await db.rpc('get_reservations');
+
+if (reservationError) {
+  list.innerHTML = '<p>Could not load reservation details.</p>';
+  return;
+} 
+  foursomes.forEach(f => {
+    const box = document.createElement('div');
+    box.className = 'foursome';
+
+    const assigned = players
+      .filter(p => p.foursome_id === f.id)
+      .sort((a, b) => a.position - b.position);
+
+    let html = `<strong>Foursome ${f.group_number}</strong>— <span class="hole-assignment">Hole:</span><input class="hole-value" type="text"value="${f.hole_assignment || ''}" placeholder="Example: 1A" style="width:70px;" onchange="saveHoleAssignment(${f.id}, this.value)">`;
+   for (let position = 1; position <= 4; position++) {
+      const player = assigned.find(p => p.position === position);
+      const member = player ? members.find(m => m.id === player.member_id) : null;
+     const reservation = member ? reservations.find(r => Number(r.game_id) === selectedGameId && r.player_name === member.name) : null;
+    const name = member
+  ? member.name + (reservation?.ride_option ? ` — ${reservation.ride_option}` : '')
+  : 'Available';    html += player
+  ? `<div class="player">${name} <button onclick="startMove(${player.id})">Move</button></div>`
+ : !window.foursomeWasChosen ? `<div class="player"><button type="button" onclick="chooseFoursome(${f.id})">Choose This Foursome</button></div>` : `<div class="player">Available</div>`;
+    }
+
+    box.innerHTML = html;
+    list.appendChild(box);
+  });
+}
+ async function saveHoleAssignment(foursomeId, hole) {
+  const pin = prompt('Enter Organizer PIN to change hole assignment:');
+  if (!pin) return;
+const { data: pinOK } = await db.rpc('verify_admin_pin', {
+ admin_pin: pin
+});
+
+if (!pinOK) {
+  alert('Incorrect Organizer PIN.');
+  return;
+}
+ const { data, error } = await db.from('foursomes')
+    .update({ hole_assignment: hole.trim() })
+   .eq('id', Number(foursomeId))
+.select();
+  
+  if (error) {
+    alert('Could not save hole assignment: ' + error.message);
+  }
+}
+ function chooseFoursome(foursomeId) {
+window.selectedFoursomeId = foursomeId;
+
+  window.foursomeWasChosen = true;
+  document.getElementById("message").innerText = "";
+  showPage('reservations', null);
+}
+ function openFoursomeChooser() {
+document.getElementById('foursomeGameSelect').value = document.getElementById('gameSelect').value;
+  window.foursomeWasChosen = false;
+  showPage('pairings', null);
+ loadFoursomes();
+}
+
+ async function loadFoursomeChoices() {
+  const choice = document.getElementById('foursomeChoice');
+const gameId = Number(document.getElementById('gameSelect').value);
+
+choice.innerHTML = '<option value="">Select a foursome</option>';
+
+const { data: foursomes, error } = await db
+  .from('foursomes')
+  .select('id, group_number')
+  .eq('game_id', gameId)
+  .order('group_number');
+
+if (error) return;
+
+  const { data: foursomePlayers, error: playerError } = await db
+  .from('foursome_players')
+  .select('foursome_id')
+  .in('foursome_id', foursomes.map(f => f.id));
+
+  if (playerError) return;
+
+const playerCounts = {};
+(foursomePlayers || []).forEach(fp => {
+  playerCounts[fp.foursome_id] = (playerCounts[fp.foursome_id] || 0) + 1;
+});
+  foursomes.forEach(f => {
+  const option = document.createElement('option');
+  option.value = f.id;
+
+   option.textContent = 'Foursome ' + f.group_number + (playerCounts[f.id] >= 4 ? ' – FULL' : ' – Available');
+   option.disabled = playerCounts[f.id] >= 4;
+   choice.appendChild(option);
+});
+}
+ 
+function printReservations() {
+const reservationList = document.getElementById('reservationList');
+ const gameSelect = document.getElementById('gameSelect');
+ const gameText = gameSelect.options[gameSelect.selectedIndex]?.text || 'Golf Game';
+ const printWindow = window.open('', '_blank');
+ const reservationsHTML = reservationList.cloneNode(true);
+ reservationsHTML.querySelectorAll('button').forEach(button => button.remove());
+ reservationsHTML.querySelectorAll('.reservation-actions').forEach(el => el.remove());
+ reservationsHTML.querySelectorAll('.game-date, .course-name').forEach(el => el.remove());
+ printWindow.document.write(`
+ <html>
+ <head>
+ <title>${gameText} - Current Reservations</title>
+ <style>
+ body {
+ font-family: Arial, sans-serif;
+ padding: 24px;
+ }
+ .reservation-columns {
+  display: grid;
+  grid-template-columns: 1fr 45px 45px 45px 45px 45px;
+  font-weight: bold;
+  border-bottom: 1px solid #000;
+  margin-bottom: 4px;
+}
+
+.reservation-columns span {
+  text-align: center;
+}
 </style> 
  </head>
  <body>
