@@ -379,7 +379,7 @@ let gamePlayerNumber = 0;
    gamePlayerNumber++;
    const row = document.createElement('div');
     row.className = 'player';
-row.innerHTML = `<div class="reservation-columns">`<span> ${gamePlayerNumber}.${r.player_name}${r.ride_option ? ' — ' + r.ride_option : ''}${r.notes ?<br><span class="print-note"><strong>Notes:</strong><br>+ r.notes '</span>': }</span><span>☐</span><span>□</span><span>□</span><span>□</span><span>□</span></div>`
+row.innerHTML = `<div class="reservation-columns">`<span> ${gamePlayerNumber}.${r.player_name}${r.ride_option ? ' — ' + r.ride_option : ''}${r.notes ?<br><span class="print-note"><strong>Notes:</strong>+ r.notes '</span>': }</span><span>☐</span><span>□</span><span>□</span><span>□</span><span>□</span></div>`
    const actions = document.createElement('div');
 actions.className = 'reservation-actions';
 const editButton = document.createElement('button');
