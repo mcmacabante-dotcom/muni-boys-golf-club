@@ -757,16 +757,47 @@ const playerCounts = {};
 }
  
 function printReservations() {
-  const reservationList = document.getElementById('reservationList');
   const gameSelect = document.getElementById('gameSelect');
-  const gameText = gameSelect.options[gameSelect.selectedIndex]?.text || 'Golf Game';
+  const reservationList = document.getElementById('reservationList');
+
+  if (!gameSelect || !reservationList) {
+    alert('Unable to find the reservation list.');
+    return;
+  }
+
+  const gameText =
+    gameSelect.options[gameSelect.selectedIndex]?.text || 'Golf Game';
+
+  const rows = Array.from(reservationList.querySelectorAll('.player'));
+
   const printWindow = window.open('', '_blank');
 
- alert('Print Reservations reached line 765');
- const reservationsHTML = reservationList.cloneNode(true);
-  reservationsHTML.querySelectorAll('button').forEach(button => button.remove());
-  reservationsHTML.querySelectorAll('.reservation-actions').forEach(el => el.remove());
-  reservationsHTML.querySelectorAll('.game-date, .course-name').forEach(el => el.remove());
+  if (!printWindow) {
+    alert('Please allow pop-up windows for this website.');
+    return;
+  }
+
+  let playersHTML = '';
+
+  rows.forEach((row) => {
+    const copy = row.cloneNode(true);
+
+    copy.querySelectorAll('button').forEach(button => button.remove());
+    copy.querySelectorAll('.reservation-actions').forEach(el => el.remove());
+
+    const playerText = copy.textContent.trim();
+
+    playersHTML += `
+      <div class="player-row">
+        <div class="player-info">${playerText}</div>
+        <div>□</div>
+        <div>□</div>
+        <div>□</div>
+        <div>□</div>
+        <div>□</div>
+      </div>
+    `;
+  });
 
   printWindow.document.write(`
     <html>
@@ -776,28 +807,60 @@ function printReservations() {
         body {
           font-family: Arial, sans-serif;
           padding: 24px;
+          color: #000;
         }
 
-        .reservation-columns {
+        h1 {
+          font-size: 18px;
+          margin-bottom: 12px;
+        }
+
+        .header-row,
+        .player-row {
           display: grid;
-          grid-template-columns: 1fr 45px 45px 45px 45px 45px;
+          grid-template-columns: 300px 45px 45px 45px 45px 45px;
+          width: 525px;
+          align-items: start;
+        }
+
+        .header-row {
           font-weight: bold;
           border-bottom: 1px solid #000;
           margin-bottom: 4px;
         }
+
+        .player-row {
+          margin-bottom: 5px;
+        }
+
+        .player-info {
+          padding-right: 8px;
+        }
       </style>
     </head>
     <body>
-      <h1>Current Reservations</h1>
-      <div class="reservation-columns"><span></span><span>Pot</span><span>CP</span><span>Qual</span><span>Cash</span><span>Rcpt</span></div>
-      ${reservationsHTML.innerHTML}
+      <h1>${gameText}</h1>
+
+      <div class="header-row">
+        <div>Player</div>
+        <div>Pot</div>
+        <div>CP</div>
+        <div>Qual</div>
+        <div>Cash</div>
+        <div>Rcpt</div>
+      </div>
+
+      ${playersHTML}
     </body>
     </html>
   `);
 
   printWindow.document.close();
- printWindow.focus();
- printWindow.print();
+
+  setTimeout(() => {
+    printWindow.focus();
+    printWindow.print();
+  }, 300);
 }
  function printFoursomes() {
   const gameSelect = document.getElementById('foursomeGameSelect');
