@@ -762,7 +762,8 @@ function printReservations() {
   const gameText = gameSelect.options[gameSelect.selectedIndex]?.text || 'Golf Game';
   const printWindow = window.open('', '_blank');
 
-  const reservationsHTML = reservationList.cloneNode(true);
+ alert('Print Reservations reached line 765');
+ const reservationsHTML = reservationList.cloneNode(true);
   reservationsHTML.querySelectorAll('button').forEach(button => button.remove());
   reservationsHTML.querySelectorAll('.reservation-actions').forEach(el => el.remove());
   reservationsHTML.querySelectorAll('.game-date, .course-name').forEach(el => el.remove());
