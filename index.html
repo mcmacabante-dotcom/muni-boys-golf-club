@@ -757,108 +757,46 @@ const playerCounts = {};
 }
  
 function printReservations() {
+  const reservationList = document.getElementById('reservationList');
   const gameSelect = document.getElementById('gameSelect');
-  const selectedGameId = Number(gameSelect?.value || 0);
-  const gameText = gameSelect?.options[gameSelect.selectedIndex]?.text || 'Golf Game';
- const printWindow = window.open('', '_blank');
- 
-  db.rpc('get_reservations').then(({ data, error }) => {
-    if (error) {
-      alert(error.message);
-      return;
-    }
+  const gameText = gameSelect.options[gameSelect.selectedIndex]?.text || 'Golf Game';
+  const printWindow = window.open('', '_blank');
 
-    const players = (data || []).filter(r => Number(r.game_id) === selectedGameId);
-    
-    let rows = '';
+  const reservationsHTML = reservationList.cloneNode(true);
+  reservationsHTML.querySelectorAll('button').forEach(button => button.remove());
+  reservationsHTML.querySelectorAll('.reservation-actions').forEach(el => el.remove());
+  reservationsHTML.querySelectorAll('.game-date, .course-name').forEach(el => el.remove());
 
-    players.forEach((r, index) => {
-      const note = r.notes
-        ? `<div class="note-box"><strong>Notes:</strong><br>${r.notes}</div>`
-        : '';
+  printWindow.document.write(`
+    <html>
+    <head>
+      <title>${gameText} - Current Reservations</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          padding: 24px;
+        }
 
-      rows += `
-        <div class="player-row">
-          <div class="player-info">
-            ${index + 1}.${r.player_name}${r.ride_option ? ' — ' + r.ride_option : ''}
-            ${note}
-          </div>
-          <div>□</div>
-          <div>□</div>
-          <div>□</div>
-          <div>□</div>
-          <div>□</div>
-        </div>
-      `;
-    });
+        .reservation-columns {
+          display: grid;
+          grid-template-columns: 1fr 45px 45px 45px 45px 45px;
+          font-weight: bold;
+          border-bottom: 1px solid #000;
+          margin-bottom: 4px;
+        }
+      </style>
+    </head>
+    <body>
+      <h1>Current Reservations</h1>
+      <div class="reservation-columns"><span></span><span>Pot</span><span>CP</span><span>Qual</span><span>Cash</span><span>Rcpt</span></div>
+      ${reservationsHTML.innerHTML}
+    </body>
+    </html>
+  `);
 
-    printWindow.document.write(`
-      <html>
-      <head>
-        <title>${gameText} - Current Reservations</title>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-            padding: 24px;
-            color: #000;
-          }
-
-          h1 {
-            font-size: 18px;
-            margin-bottom: 12px;
-          }
-
-          .header-row,
-          .player-row {
-            display: grid;
-            grid-template-columns: 300px 45px 45px 45px 45px 45px;
-            width: 525px;
-            align-items: start;
-          }
-
-          .header-row {
-            font-weight: bold;
-            border-bottom: 1px solid #000;
-          }
-
-          .player-row {
-            margin-bottom: 3px;
-          }
-
-          .note-box {
-            width: 280px;
-            border: 1px solid #999;
-            padding: 3px 5px;
-            margin-top: 2px;
-            box-sizing: border-box;
-            white-space: normal;
-            overflow-wrap: break-word;
-            font-weight: normal;
-          }
-        </style>
-      </head>
-      <body>
-        <h1>Current Reservations</h1>
-
-        <div class="header-row">
-          <div></div>
-          <div>Pot</div>
-          <div>CP</div>
-          <div>Qual</div>
-          <div>Cash</div>
-          <div>Rcpt</div>
-        </div>
-
-        ${rows}
-      </body>
-      </html>
-    `);
-
-    printWindow.document.close();
-   printWindow.focus();
-   printWindow.print();
-  });
-} 
+  printWindow.document.close();
+  printWindow.print();
+}
  function printFoursomes() {
   const gameSelect = document.getElementById('foursomeGameSelect');
   const foursomeList = document.getElementById('foursomeList');
