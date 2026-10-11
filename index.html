@@ -760,7 +760,8 @@ function printReservations() {
   const gameSelect = document.getElementById('gameSelect');
   const selectedGameId = Number(gameSelect?.value || 0);
   const gameText = gameSelect?.options[gameSelect.selectedIndex]?.text || 'Golf Game';
-
+ const printWindow = window.open('', '_blank');
+ 
   db.rpc('get_reservations').then(({ data, error }) => {
     if (error) {
       alert(error.message);
@@ -768,8 +769,7 @@ function printReservations() {
     }
 
     const players = (data || []).filter(r => Number(r.game_id) === selectedGameId);
-    const printWindow = window.open('', '_blank');
-
+    
     let rows = '';
 
     players.forEach((r, index) => {
