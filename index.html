@@ -765,6 +765,13 @@ const reservationList = document.getElementById('reservationList');
  reservationsHTML.querySelectorAll('button').forEach(button => button.remove());
  reservationsHTML.querySelectorAll('.reservation-actions').forEach(el => el.remove());
  reservationsHTML.querySelectorAll('.game-date, .course-name').forEach(el => el.remove());
+reservationsHTML.querySelectorAll('.reservation-item').forEach(row => {
+  const checks = document.createElement('div');
+  checks.className = 'reservation-columns';
+  checks.innerHTML = '<span></span><span>□</span><span>□</span><span>□</span><span>□</span><span>□</span>';
+  row.appendChild(checks);
+});
+ 
 
  
  printWindow.document.write(`
