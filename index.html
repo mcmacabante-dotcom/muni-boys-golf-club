@@ -362,7 +362,6 @@ const SUPABASE_URL = 'https://iwxfbdjgzzynhjdzvhjq.supabase.co';
  loadReservations();
 loadGames().then(loadFoursomes);
  loadMembers();
- /*
  async function loadReservations() {
   const list = document.getElementById('reservationList');
   const selectedGameId = Number(document.getElementById('gameSelect')?.value || 0);
@@ -380,7 +379,7 @@ let gamePlayerNumber = 0;
    gamePlayerNumber++;
    const row = document.createElement('div');
     row.className = 'player';
- row.innerHTML = `<div class="reservation-columns"><span>${gamePlayerNumber}. ${r.player_name}${r.ride_option ? ' — ' + r.ride_option : ''}</span></div>`;   
+row.innerHTML = `<div class="reservation-columns">`<span> ${gamePlayerNumber}.${r.player_name}${r.ride_option ? ' — ' + r.ride_option : ''}${r.notes ? '<br><strong>Notes:</strong> ' + r.notes : }</span><span>☐</span><span>□</span><span>□</span><span>□</span><span>□</span></div>`
    const actions = document.createElement('div');
 actions.className = 'reservation-actions';
 const editButton = document.createElement('button');
@@ -396,8 +395,7 @@ list.appendChild(row);
 });
                                                                                                                                             });
 }
-*/
- async function loadMembers() {
+async function loadMembers() {
  const list = document.getElementById('memberList');
  if (!list) return;
 
@@ -516,7 +514,7 @@ gameRow.appendChild(editButton);
   gameRow.appendChild(deleteButton);
   gamesList.appendChild(gameRow);
   select.appendChild(option);
-  foursomeSelect.appendChild(option.cloneNode(true));  
+   foursomeSelect.appendChild(option.cloneNode(true));
   });
  if (selectedGame) select.value = selectedGame;
   loadSelectedGameAdminMessage();
@@ -702,7 +700,7 @@ if (!pinOK) {
 }
  const { data, error } = await db.from('foursomes')
     .update({ hole_assignment: hole.trim() })
-   .eq('id', Number(foursomeId
+   .eq('id', Number(foursomeId))
 .select();
   
   if (error) {
@@ -740,7 +738,7 @@ if (error) return;
   const { data: foursomePlayers, error: playerError } = await db
   .from('foursome_players')
   .select('foursome_id')
-  .in('foursome_id', foursomes.map(f => f.id;
+  .in('foursome_id', foursomes.map(f => f.id));
 
   if (playerError) return;
 
@@ -759,116 +757,51 @@ const playerCounts = {};
 }
  
 function printReservations() {
-  const gameSelect = document.getElementById('gameSelect');
-  const reservationList = document.getElementById('reservationList');
+const reservationList = document.getElementById('reservationList');
+ const gameSelect = document.getElementById('gameSelect');
+ const gameText = gameSelect.options[gameSelect.selectedIndex]?.text || 'Golf Game';
+ const printWindow = window.open('', '_blank');
+ const reservationsHTML = reservationList.cloneNode(true);
+ reservationsHTML.querySelectorAll('button').forEach(button => button.remove());
+ reservationsHTML.querySelectorAll('.reservation-actions').forEach(el => el.remove());
+ reservationsHTML.querySelectorAll('.game-date, .course-name').forEach(el => el.remove());
 
-  if (!gameSelect || !reservationList) {
-    alert('Unable to find the reservation list.');
-    return;
-  }
-
-  const gameText =
-    gameSelect.options[gameSelect.selectedIndex]?.text || 'Golf Game';
-
-  const rows = Array.from(reservationList.querySelectorAll('.player';
-
-  const printWindow = window.open('', '_blank');
-
-  if (!printWindow) {
-    alert('Please allow pop-up windows for this website.');
-    return;
-  }
-
-  let playersHTML = '';
-
-  rows.forEach((row) => {
-    const copy = row.cloneNode(true);
-
-    copy.querySelectorAll('button').forEach(button => button.remove(;
-    copy.querySelectorAll('.reservation-actions').forEach(el => el.remove(;
-
-    const playerText = copy.textContent.trim();
-
-    playersHTML += `
-      <div class="player-row">
-        <div class="player-info">${playerText}</div>
-        <div>□</div>
-        <div>□</div>
-        <div>□</div>
-        <div>□</div>
-        <div>□</div>
-      </div>
-    `;
-  });
-
-  printWindow.document.write(`
-    <html>
-    <head>
-      <title>${gameText} - Current Reservations</title>
-      <style>
-        body {
-          font-family: Arial, sans-serif;
-          padding: 24px;
-          color: #000;
-        }
-
-        h1 {
-          font-size: 18px;
-          margin-bottom: 12px;
-        }
-
-        .header-row,
-        .player-row {
-          display: grid;
-          grid-template-columns: 300px 45px 45px 45px 45px 45px;
-          width: 525px;
-          align-items: start;
-        }
-
-        .header-row {
-          font-weight: bold;
-          border-bottom: 1px solid #000;
-          margin-bottom: 4px;
-        }
-
-        .player-row {
-          margin-bottom: 5px;
-        }
-
-        .player-info {
-          padding-right: 8px;
-        }
-      </style>
-    </head>
-    <body>
-      <h1>${gameText}</h1>
-
-      <div class="header-row">
-        <div>Player</div>
-        <div>Pot</div>
-        <div>CP</div>
-        <div>Qual</div>
-        <div>Cash</div>
-        <div>Rcpt</div>
-      </div>
-
-      ${playersHTML}
-    </body>
-    </html>
-  `);
-
-  printWindow.document.close();
-
-  setTimeout(() => {
-    printWindow.focus();
-    printWindow.print();
-  }, 300);
+ 
+ printWindow.document.write(`
+ <html>
+ <head>
+ <title>${gameText} - Current Reservations</title>
+ <style>
+ body {
+ font-family: Arial, sans-serif;
+ padding: 24px;
+ }
+ .reservation-columns {
+  display: grid;
+  grid-template-columns: 1fr 45px 45px 45px 45px 45px;
+  font-weight: bold;
+  border-bottom: 1px solid #000;
+  margin-bottom: 4px;
 }
+
+
+</style> 
+ </head>
+ <body>
+ <h1>Current Reservations</h1>
+<div class="reservation-columns"><span></span><span>Pot</span><span>CP</span><span>Qual</span><span>Cash</span><span>Rcpt</span></div>
+${reservationsHTML.innerHTML}
+</body>
+</html>
+`);
+ printWindow.document.close();
+ printWindow.print();
+ }
  function printFoursomes() {
   const gameSelect = document.getElementById('foursomeGameSelect');
   const foursomeList = document.getElementById('foursomeList');
 const filledFoursomes = Array.from(foursomeList.children).filter(box =>
-  Array.from(box.querySelectorAll('.player'.some(row =>
+  Array.from(box.querySelectorAll('.player')).some(row =>
     row.querySelector('button')?.textContent.trim() === 'Move'
   )
 );
@@ -1046,7 +979,7 @@ const selectedGameId = Number(document.getElementById('foursomeGameSelect')?.val
   }
 
   const used = occupied.map(p => p.position);
-  const targetPosition = [1, 2, 3, 4].find(p => !used.includes(p;
+  const targetPosition = [1, 2, 3, 4].find(p => !used.includes(p));
 
   if (!targetPosition) {
     alert('That foursome is full.');
@@ -1096,7 +1029,7 @@ if (checkError) {
   const { data: gameInfo, error: gameInfoError } = await db
   .from('games')
   .select('player_limit')
-  .eq('id', Number(gameId
+  .eq('id', Number(gameId))
   .single();
 
 if (gameInfoError) {
@@ -1104,7 +1037,7 @@ if (gameInfoError) {
   return false;
 }
 
-const reservedCount = existing.filter(r => r.game_id === Number(gameId.length;
+const reservedCount = existing.filter(r => r.game_id === Number(gameId)).length;
 
 if (reservedCount >= gameInfo.player_limit) {
   alert('This game is full. The player limit has been reached.');
@@ -1173,7 +1106,7 @@ if (reservedCount >= gameInfo.player_limit) {
   await loadReservations();
 }
  async function cancelReservation(id) {
-  if (!confirm('Cancel this reservation?' return;
+  if (!confirm('Cancel this reservation?')) return;
 
   const pin = prompt('Enter Admin PIN:');
   if (!pin) return;
@@ -1216,7 +1149,7 @@ loadGames();
 
  async function addMember() {
   const name = prompt('Enter new member name:');
-  if (!name || !name.trim( return;
+  if (!name || !name.trim()) return;
 
   const pin = prompt('Enter admin PIN:');
   if (!pin) return;
@@ -1275,15 +1208,175 @@ loadGames();
 </body>
 
 </html>
+<button onclick="showPage('games',this)">Games</button>
+
+<button onclick="showPage('reservations',this)">Reservations</button>
+
+<button onclick="showPage('pairings',this); loadFoursomes();">Foursomes</button>
+ <button onclick="organizerAccess()">Organizer</button>
+<button class="organizer-only" style="display:none" onclick="showPage('members',this)">Members</button></nav>
+
+<main>
+
+<section id="home">
+
+<div class="card">
+
+<h2>Club Dashboard</h2>
+
+<div class="grid">
+
+<div class="stat"><div class="big">300</div>Members</div>
+
+<div class="stat"><div class="big">60</div>Players / Game</div>
+
+<div class="stat"><div class="big">3</div>Games / Week</div>
+
+<div class="stat"><div class="big">15</div>Foursomes</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>Next Game</h2>
+
+<div class="game" id="nextGame">
+
+Monday • 8:00 AM<br><br>
+
+<span id="count">4 players currently listed</span>
+
+</div>
+
+<button class="action" onclick="showPage('reservations')">Reserve a Spot</button>
+
+</div>
+
+</section>
+
+<section id="games" class="hidden">
+
+<div class="card">
+
+<h2>Upcoming Games</h2>
+<input id="newCourseName" placeholder="Enter golf course">
+
+ <input id="newGameDate" type="date">
+ <input id="newPlayerLimit" type="number" min="1"  placeholder="Player Limit">
+ <button id="gameActionButton" class="action" onclick="addGame()">Add Game</button>
+ <div id="gamesList"></div>
+ </div>
+</section>
+
+<section id="reservations" class="hidden">
+
+<div class="card">
+
+<h2>Player Reservation</h2>
+
+<label>Player Name</label>
+
+<input id="playerName" placeholder="Enter player name">
+
+<label>Select Game</label>
+
+<select id="gameSelect"onchange="loadReservations(); loadFoursomeChoices(); loadSelectedGameAdminMessage()" onclick="loadFoursomeChoices()"> </select>
+
+ <label>Walk or Cart</label>
+<select id="rideOption">
+  <option value="Walk">Walk</option>
+  <option value="Cart">Cart</option>
+</select>
+<button type="button" class="foursome-choice" onclick="openFoursomeChooser()">View Foursomes and Choose</button>
+
+ <label>Notes / Requests</label>
+ <textarea id="reservationNotes" placeholder="Enter any notes or special requests" style="width:100%; min-height:50px; font-size:14px; line-height:1.4; padding:12px;"></textarea>
+ 
+ <label>Admin Message / Notes</label>
+ <textarea id="adminGameMessage" placeholder="Admin message for this game" readonly style="width:100%; min-height:50px; font-size:16px; line-height:1.4; padding:12px;"></textarea>
+ <button type="button" onclick="editAdminGameMessage()">Admin Message</button>
+ <button type="button" id="saveAdminMessageButton" onclick="saveAdminGameMessage()" style="display:none;">Save Admin Message</button>
+ <button type="button" onclick="deleteAdminGameMessage()">Delete Message</button>
+ <button class="action" onclick="reserve()">Add Reservation</button>
+  
+
+<p id="message"></p>
+
+</div>
+
+<div class="card">
+
+<h2>Current Reservations</h2>
+ <button type="button" onclick="printReservations()">Print Current Reservations</button>
+ 
+<div id="reservationList">
+
+
+
+</div>
+
+</div>
+
+</section>
+
+<section id="pairings" class="hidden">
+
+<div class="card">
+
+<h2>Foursome Pairings</h2>
+
+<p>Organizer view for creating and arranging groups.</p>
+ <label for="foursomeGameSelect"><strong>Select Game</strong></label>
+<select id="foursomeGameSelect" onchange="loadFoursomes()"></select>
+ <button type="button" class="action" onclick="printFoursomes()">Print Foursomes</button>
+ <div id="foursomeList"></div>
+</div>
+</section>
+ 
+
+<section id="members" class="hidden">
+
+<div class="card">
+
+<h2>Member Directory</h2>
+
+<input id="search" placeholder="Search member" onkeyup="filterMembers()">
+
+ <button type="button" onclick="addMember()">+ Add Member</button>
+<div id="memberList">
+
+<p id="memberLoading">Loading members...</p>
+
+</div>
+
+</section>
+
+</main>
+
+<footer>
+
+MuniBoys And Friends Golf Club of LV<br>
+
+Member scheduling system<br> 
+
+ Manny C Macabante<br>
+ 
+ 702-528-3846(Text Only)
+ 
+</footer>
+
 <script>
 
 function showPage(id,btn){
 
  document.querySelectorAll("main section").forEach(x=>x.classList.add("hidden"));
+
  document.getElementById(id).classList.remove("hidden");
 
  document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
- 
+
  if(btn)btn.classList.add("active");
 
  window.scrollTo(0,0);
@@ -1563,7 +1656,7 @@ gameRow.appendChild(editButton);
   gamesList.appendChild(gameRow);
   select.appendChild(option);
    foursomeSelect.appendChild(option.cloneNode(true));
- });
+  });
  if (selectedGame) select.value = selectedGame;
   loadSelectedGameAdminMessage();
  }
@@ -1747,7 +1840,7 @@ if (!pinOK) {
 }
  const { data, error } = await db.from('foursomes')
     .update({ hole_assignment: hole.trim() })
-   .eq('id', Number(foursomeId
+   .eq('id', Number(foursomeId))
 .select();
   
   if (error) {
@@ -1785,7 +1878,7 @@ if (error) return;
   const { data: foursomePlayers, error: playerError } = await db
   .from('foursome_players')
   .select('foursome_id')
-  .in('foursome_id', foursomes.map(f => f.id;
+  .in('foursome_id', foursomes.map(f => f.id));
 
   if (playerError) return;
 
@@ -1803,12 +1896,52 @@ const playerCounts = {};
 });
 }
  
+function printReservations() {
+const reservationList = document.getElementById('reservationList');
+ const gameSelect = document.getElementById('gameSelect');
+ const gameText = gameSelect.options[gameSelect.selectedIndex]?.text || 'Golf Game';
+ const printWindow = window.open('', '_blank');
+ const reservationsHTML = reservationList.cloneNode(true);
+ reservationsHTML.querySelectorAll('button').forEach(button => button.remove());
+ reservationsHTML.querySelectorAll('.reservation-actions').forEach(el => el.remove());
+ reservationsHTML.querySelectorAll('.game-date, .course-name').forEach(el => el.remove());
+ printWindow.document.write(`
+ <html>
+ <head>
+ <title>${gameText} - Current Reservations</title>
+ <style>
+ body {
+ font-family: Arial, sans-serif;
+ padding: 24px;
+ }
+ .reservation-columns {
+  display: grid;
+  grid-template-columns: 1fr 45px 45px 45px 45px 45px;
+  font-weight: bold;
+  border-bottom: 1px solid #000;
+  margin-bottom: 4px;
+}
 
+.reservation-columns span {
+  text-align: center;
+}
+</style> 
+ </head>
+ <body>
+ <h1>Current Reservations</h1>
+<div class="reservation-columns"><span></span><span>Pot</span><span>CP</span><span>Qual</span><span>Cash</span><span>Rcpt</span></div>
+${reservationsHTML.innerHTML}
+</body>
+</html>
+`);
+ printWindow.document.close();
+ printWindow.print();
+ }
  function printFoursomes() {
   const gameSelect = document.getElementById('foursomeGameSelect');
   const foursomeList = document.getElementById('foursomeList');
 const filledFoursomes = Array.from(foursomeList.children).filter(box =>
-  Array.from(box.querySelectorAll('.player'.some(row =>
+  Array.from(box.querySelectorAll('.player')).some(row =>
     row.querySelector('button')?.textContent.trim() === 'Move'
   )
 );
@@ -1986,7 +2119,7 @@ const selectedGameId = Number(document.getElementById('foursomeGameSelect')?.val
   }
 
   const used = occupied.map(p => p.position);
-  const targetPosition = [1, 2, 3, 4].find(p => !used.includes(p;
+  const targetPosition = [1, 2, 3, 4].find(p => !used.includes(p));
 
   if (!targetPosition) {
     alert('That foursome is full.');
@@ -2036,7 +2169,7 @@ if (checkError) {
   const { data: gameInfo, error: gameInfoError } = await db
   .from('games')
   .select('player_limit')
-  .eq('id', Number(gameId
+  .eq('id', Number(gameId))
   .single();
 
 if (gameInfoError) {
@@ -2044,7 +2177,7 @@ if (gameInfoError) {
   return false;
 }
 
-const reservedCount = existing.filter(r => r.game_id === Number(gameId.length;
+const reservedCount = existing.filter(r => r.game_id === Number(gameId)).length;
 
 if (reservedCount >= gameInfo.player_limit) {
   alert('This game is full. The player limit has been reached.');
@@ -2113,7 +2246,7 @@ if (reservedCount >= gameInfo.player_limit) {
   await loadReservations();
 }
  async function cancelReservation(id) {
-  if (!confirm('Cancel this reservation?' return;
+  if (!confirm('Cancel this reservation?')) return;
 
   const pin = prompt('Enter Admin PIN:');
   if (!pin) return;
@@ -2156,7 +2289,7 @@ loadGames();
 
  async function addMember() {
   const name = prompt('Enter new member name:');
-  if (!name || !name.trim( return;
+  if (!name || !name.trim()) return;
 
   const pin = prompt('Enter admin PIN:');
   if (!pin) return;
