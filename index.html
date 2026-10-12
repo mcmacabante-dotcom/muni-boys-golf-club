@@ -516,7 +516,7 @@ gameRow.appendChild(editButton);
   gameRow.appendChild(deleteButton);
   gamesList.appendChild(gameRow);
   select.appendChild(option);
-   foursomeSelect.appendChild(option.cloneNode(true;
+  foursomeSelect.appendChild(option.cloneNode(true));  
   });
  if (selectedGame) select.value = selectedGame;
   loadSelectedGameAdminMessage();
@@ -1279,12 +1279,11 @@ loadGames();
 
 function showPage(id,btn){
 
- document.querySelectorAll("main section").forEach(x=>x.classList.add("hidden";
-
+ document.querySelectorAll("main section").forEach(x=>x.classList.add("hidden"));
  document.getElementById(id).classList.remove("hidden");
 
- document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active";
-
+ document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
+ 
  if(btn)btn.classList.add("active");
 
  window.scrollTo(0,0);
@@ -1563,8 +1562,8 @@ gameRow.appendChild(editButton);
   gameRow.appendChild(deleteButton);
   gamesList.appendChild(gameRow);
   select.appendChild(option);
-   foursomeSelect.appendChild(option.cloneNode(true;
-  });
+   foursomeSelect.appendChild(option.cloneNode(true));
+ });
  if (selectedGame) select.value = selectedGame;
   loadSelectedGameAdminMessage();
  }
