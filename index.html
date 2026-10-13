@@ -167,7 +167,8 @@ Monday • 8:00 AM<br><br>
 <div class="card">
 
 <h2>Current Reservations</h2>
-
+ <button type="button" onclick="printCurrentReservations()">Print Current Reservations</button>
+ 
 <div id="reservationList">
 
 
@@ -1147,6 +1148,57 @@ loadGames();
   
   
   }, 10000);
+function printCurrentReservations() {
+  const list = document.getElementById('reservationList');
+
+  if (!list || !list.innerText.trim()) {
+    alert('There are no current reservations to print.');
+    return;
+  }
+
+  const gameSelect = document.getElementById('gameSelect');
+  const gameText = gameSelect && gameSelect.selectedIndex >= 0
+    ? gameSelect.options[gameSelect.selectedIndex].text
+    : 'Current Reservations';
+
+  const printWindow = window.open('', '_blank');
+
+  printWindow.document.write(`
+    <html>
+    <head>
+      <title>Current Reservations</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          padding: 30px;
+          color: #000;
+        }
+        h1 {
+          margin-bottom: 5px;
+        }
+        h2 {
+          margin-top: 0;
+          font-weight: normal;
+        }
+        button {
+          display: none !important;
+        }
+      </style>
+    </head>
+    <body>
+      <h1>MuniBoys And Friends Golf Club of Las Vegas</h1>
+      <h2>${gameText}</h2>
+      <h3>Current Reservations</h3>
+      ${list.innerHTML}
+    </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+}
+ 
 </script> 
 </body>
 
