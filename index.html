@@ -102,7 +102,7 @@ footer{text-align:center;padding:25px;color:#777;font-size:14px}
 
 <div class="game" id="nextGame">
 
-
+Monday • 8:00 AM<br><br>
 
 <span id="count">4 players currently listed</span>
 
@@ -167,8 +167,7 @@ footer{text-align:center;padding:25px;color:#777;font-size:14px}
 <div class="card">
 
 <h2>Current Reservations</h2>
- <button type="button" onclick="printReservations()">Print Current Reservations</button>
- 
+
 <div id="reservationList">
 
 
@@ -379,21 +378,8 @@ let gamePlayerNumber = 0;
    gamePlayerNumber++;
    const row = document.createElement('div');
     row.className = 'player';
-row.innerHTML = `<div class="reservation-columns">`<span> ${gamePlayerNumber}.${r.player_name}${r.ride_option ? ' — ' + r.ride_option : ''}${r.notes ? '<br><strong>Notes:</strong> ' + r.notes : }</span><span>☐</span><span>□</span><span>□</span><span>□</span><span>□</span></div>`
-   const actions = document.createElement('div');
-actions.className = 'reservation-actions';
-const editButton = document.createElement('button');
- editButton.textContent = 'Edit'; 
-           editButton.onclick = () => editReservation(r);
-actions.appendChild(editButton);
-const cancelButton = document.createElement('button');
-cancelButton.textContent = 'Cancel';
-cancelButton.onclick = () => cancelReservation(r.id);
-actions.appendChild(cancelButton);
-row.appendChild(actions);
-list.appendChild(row);
-});
-                                                                                                                                            });
+  row.innerHTML = `<span> ${gamePlayerNumber}.${r.player_name}${r.ride_option ? ' — ' + r.ride_option : ''} — ${new Date(r.game_date + 'T00:00:00').toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'})} — ${r.course_name}${r.notes ? ' — Notes: ' + r.notes : ''}</span><span style="display:flex; gap:8px;"><button type="button" onclick="editReservation(${r.signup_id}, '${r.ride_option || ''}', '${r.notes || ''}')">Edit</button><button type="button" onclick="cancelReservation(${r.signup_id})">Cancel</button</span>`; list.appendChild(row);
+  });
 }
 async function loadMembers() {
  const list = document.getElementById('memberList');
@@ -684,8 +670,7 @@ if (reservationError) {
 
     box.innerHTML = html;
     list.appendChild(box);
-
- });
+  });
 }
  async function saveHoleAssignment(foursomeId, hole) {
   const pin = prompt('Enter Organizer PIN to change hole assignment:');
@@ -755,55 +740,6 @@ const playerCounts = {};
    choice.appendChild(option);
 });
 }
- 
-function printReservations() {
-const reservationList = document.getElementById('reservationList');
- const gameSelect = document.getElementById('gameSelect');
- const gameText = gameSelect.options[gameSelect.selectedIndex]?.text || 'Golf Game';
- const printWindow = window.open('', '_blank');
- const reservationsHTML = reservationList.cloneNode(true);
- reservationsHTML.querySelectorAll('button').forEach(button => button.remove());
- reservationsHTML.querySelectorAll('.reservation-actions').forEach(el => el.remove());
- reservationsHTML.querySelectorAll('.game-date, .course-name').forEach(el => el.remove());
-reservationsHTML.querySelectorAll('.reservation-item').forEach(row => {
-  const checks = document.createElement('div');
-  checks.className = 'reservation-columns';
-  checks.innerHTML = '<span></span><span>□</span><span>□</span><span>□</span><span>□</span><span>□</span>';
-  row.appendChild(checks);
-});
- 
-
- 
- printWindow.document.write(`
- <html>
- <head>
- <title>${gameText} - Current Reservations</title>
- <style>
- body {
- font-family: Arial, sans-serif;
- padding: 24px;
- }
- .reservation-columns {
-  display: grid;
-  grid-template-columns: 1fr 45px 45px 45px 45px 45px;
-  font-weight: bold;
-  border-bottom: 1px solid #000;
-  margin-bottom: 4px;
-}
-
-
-</style> 
- </head>
- <body>
- <h1>Current Reservations</h1>
-<div class="reservation-columns"><span></span><span>Pot</span><span>CP</span><span>Qual</span><span>Cash</span><span>Rcpt</span></div>
-${reservationsHTML.innerHTML}
-</body>
-</html>
-`);
- printWindow.document.close();
- printWindow.print();
- }
  function printFoursomes() {
   const gameSelect = document.getElementById('foursomeGameSelect');
   const foursomeList = document.getElementById('foursomeList');
@@ -1215,4 +1151,3 @@ loadGames();
 </body>
 
 </html>
-
