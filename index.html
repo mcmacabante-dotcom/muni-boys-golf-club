@@ -378,9 +378,12 @@ let gamePlayerNumber = 0;
    if (selectedGameId && Number(r.game_id) !== selectedGameId) return;
    gamePlayerNumber++;
    const row = document.createElement('div');
-    row.className = 'player';
- row.innerHTML = `<span>${gamePlayerNumber}.${r.player_name}${r.ride_option ? ' — ' + r.ride_option : ''}</span><span><button onclick="editReservation(${r.signup_id})">Edit</button> <button onclick="cancelReservation(${r.signup_id})">Cancel</button></span>`;
+  row.className = 'player';
+row.style.display = 'block';
+   row.innerHTML = `<span>${gamePlayerNumber}.${r.player_name}${r.ride_option ? ' — ' + r.ride_option : ''}</span><span><button onclick="editReservation(${r.signup_id})">Edit</button> <button onclick="cancelReservation(${r.signup_id})">Cancel</button></span>`;
    if (r.notes) row.insertAdjacentHTML('beforeend', `<div style="margin-top:8px; padding:8px 12px; border:1px solid #ccc; border-radius:8px; background:#f7f7f7;"><strong>Notes / Requests:</strong> ${r.notes}</div>`);
+   if (r.notes) row.querySelector('div').style.width = 'auto';
+   if (r.notes) row.querySelector('div').style.clear = 'both';
    list.appendChild(row);
   });
 }
