@@ -380,6 +380,7 @@ let gamePlayerNumber = 0;
    const row = document.createElement('div');
     row.className = 'player';
  row.innerHTML = `<span>${gamePlayerNumber}.${r.player_name}${r.ride_option ? ' — ' + r.ride_option : ''}</span><span><button onclick="editReservation(${r.id})">Edit</button> <button onclick="cancelReservation(${r.id})">Cancel</button></span>`;
+   list.appendChild(row);
   });
 }
 async function loadMembers() {
