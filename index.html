@@ -1167,16 +1167,9 @@ const playerRows = printList.querySelectorAll('.player');
   row.style.display = 'grid';
   row.style.gridTemplateColumns = '1fr 55px 55px 55px 55px 55px';
   row.style.gap = '4px';
-row.insertAdjacentHTML('beforeend', '<span class="print-check"></span><span class="print-check"></span><span class="print-check"></span><span class="print-check"></span>');
-  const noteBox = row.querySelector('div'
-if (noteBox) {
-  noteBox.style.gridColumn = '1 / -1';
- noteBox.style.width = '50%';
- noteBox.style.padding = '1px 4px';
- noteBox.style.margin = '0';
- noteBox.style.fontSize = '9px';
-  noteBox.style.lineHeight = '1.1';
-}
+ row.insertAdjacentHTML('beforeend', '<span></span><span></span><span></span><span></span><span></span>');
+  const noteBox = row.querySelector('div');
+if (noteBox) noteBox.style.gridColumn = '1 / -1';
  });
   const gameSelect = document.getElementById('gameSelect');
   const gameText = gameSelect && gameSelect.selectedIndex >= 0
@@ -1192,8 +1185,8 @@ if (noteBox) {
       <style>
         body {
           font-family: Arial, sans-serif;
-        padding: 10px;
-        color: #000;
+          padding: 30px;
+          color: #000;
         }
         h1 {
           margin-bottom: 5px;
@@ -1205,15 +1198,6 @@ if (noteBox) {
         button {
           display: none !important;
         }
-.print-check {
-  display: inline-block;
-  width: 11px;
-  height: 11px;
-  border: 1.5px solid #000;
-  box-sizing: border-box;
-  justify-self: center;
-  align-self: center;
-}        
       </style>
     </head>
     <body>
