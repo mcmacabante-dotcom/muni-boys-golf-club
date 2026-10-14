@@ -670,7 +670,7 @@ if (reservationError) {
     const name = member
   ? member.name + (reservation?.ride_option ? ` — ${reservation.ride_option}` : '')
   : 'Available';    html += player
-  ? `<div class="player">${name} <button onclick="startMove(${player.signup_id})">Move</button></div>`
+  ? `<div class="player">${name} <button onclick="startMove(${player.id)">Move</button></div>`
  : !window.foursomeWasChosen ? `<div class="player"><button type="button" onclick="chooseFoursome(${f.id})">Choose This Foursome</button></div>` : `<div class="player">Available</div>`;
     }
 
