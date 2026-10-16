@@ -1168,6 +1168,7 @@ const playerRows = printList.querySelectorAll('.player');
   row.style.gridTemplateColumns = '1fr 55px 55px 55px 55px 55px';
   row.style.gap = '4px';
   row.style.alignItems = 'start';
+  row.querySelector('span').style.gridColumn = '1';
   row.insertAdjacentHTML('beforeend', '<span class="print-check">☐</span><span class="print-check">☐</span><span class="print-check">☐</span><span class="print-check">☐</span><span class="print-check">☐</span>');
   const noteBox = row.querySelector('div');
 if (noteBox) {
