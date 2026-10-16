@@ -1222,7 +1222,9 @@ button {
 
   printWindow.document.close();
   printWindow.focus();
+ setTimeout(() => {
   printWindow.print();
+}, 500);
 }
  
 </script> 
