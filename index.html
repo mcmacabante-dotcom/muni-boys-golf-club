@@ -1169,7 +1169,12 @@ const playerRows = printList.querySelectorAll('.player');
   row.style.gap = '4px';
  row.insertAdjacentHTML('beforeend', '<span>☐</span><span>☐</span><span>☐</span><span>☐</span><span>☐</span>');
   const noteBox = row.querySelector('div');
-if (noteBox) noteBox.style.gridColumn = '1 / -1';
+if (noteBox) {
+  noteBox.style.gridColumn = '1';
+  noteBox.style.width = '50%';
+  noteBox.style.whiteSpace = 'normal';
+  noteBox.style.overflowWrap = 'break-word';
+}
  });
   const gameSelect = document.getElementById('gameSelect');
   const gameText = gameSelect && gameSelect.selectedIndex >= 0
