@@ -1167,7 +1167,7 @@ const playerRows = printList.querySelectorAll('.player');
   row.style.display = 'grid';
   row.style.gridTemplateColumns = '1fr 55px 55px 55px 55px 55px';
   row.style.gap = '4px';
-  row.style.gridAutoFlow = 'column';
+  row.style.alignItems = 'start';
   row.insertAdjacentHTML('beforeend', '<span class="print-check">☐</span><span class="print-check">☐</span><span class="print-check">☐</span><span class="print-check">☐</span><span class="print-check">☐</span>');
   const noteBox = row.querySelector('div');
 if (noteBox) {
