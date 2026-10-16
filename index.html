@@ -1172,10 +1172,7 @@ const playerRows = printList.querySelectorAll('.player');
   row.insertAdjacentHTML('beforeend', '<span class="print-check" style="grid-column:2">□</span><span class="print-check">□</span><span class="print-check">□</span><span class="print-check">□</span><span class="print-check">□</span>');
   const noteBox = row.querySelector('div');
 if (noteBox) {
-  noteBox.style.gridColumn = '1';
-  noteBox.style.width = '50%';
-  noteBox.style.whiteSpace = 'normal';
-  noteBox.style.overflowWrap = 'break-word';
+  noteBox.remove();
 }
  });
   const gameSelect = document.getElementById('gameSelect');
