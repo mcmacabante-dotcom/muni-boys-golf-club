@@ -364,6 +364,7 @@ loadGames().then(loadFoursomes);
  loadMembers();
  async function loadReservations() {
   const list = document.getElementById('reservationList');
+  list.innerHTML = '';
   const selectedGameId = Number(document.getElementById('gameSelect')?.value || 0);
   const { data, error } = await db.rpc('get_reservations');
 
