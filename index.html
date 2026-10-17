@@ -1163,8 +1163,9 @@ function printCurrentReservations() {
 const printList = list.cloneNode(true);
 printList.querySelectorAll('button').forEach(button => button.remove());
 
-const playerRows = printList.querySelectorAll('.player');
-
+const playerRows = Array.from(printList.querySelectorAll('.player')).filter(row => {
+    return window.getComputedStyle(row).display !== 'none';
+});
 let tableRows = '';
 
 playerRows.forEach(row => {
