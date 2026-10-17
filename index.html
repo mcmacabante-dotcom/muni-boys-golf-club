@@ -1162,29 +1162,29 @@ function printCurrentReservations() {
   }
 const printList = list.cloneNode(true);
 printList.querySelectorAll('button').forEach(button => button.remove());
-const playerRows = printList.querySelectorAll('.player');
- playerRows.forEach(row => {
- row.style.display = 'grid';
-row.style.gridTemplateColumns = '1fr 55px 55px 55px 55px 55px';
-row.style.columnGap = '4px';
-row.style.alignItems = 'center';
-row.style.minHeight = '20px';
-row.style.margin = '0';
-row.style.padding = '0';
 
-const nameSpan = row.querySelector('span');
-nameSpan.style.gridColumn = '1';
-  nameSpan.style.margin = '0';
-nameSpan.style.padding = '0';
-row.insertAdjacentHTML('beforeend',
-  '<span class="print-check" style="grid-column:2">□</span><span class="print-check" style="grid-column:3">□</span><span class="print-check" style="grid-column:4">□</span><span class="print-check" style="grid-column:5">□</span><span class="print-check" style="grid-column:6">□</span>'
-);
-  const noteBox = row.querySelector('div');
-if (noteBox) {
-  noteBox.remove();
-}
- });
-  const gameSelect = document.getElementById('gameSelect');
+const playerRows = printList.querySelectorAll('.player');
+
+let tableRows = '';
+
+playerRows.forEach(row => {
+  const nameSpan = row.querySelector('span');
+  if (!nameSpan) return;
+
+  const playerName = nameSpan.textContent.trim();
+
+  tableRows += `
+    <tr>
+      <td class="player-name">${playerName}</td>
+      <td>□</td>
+      <td>□</td>
+      <td>□</td>
+      <td>□</td>
+      <td>□</td>
+    </tr>
+  `;
+});
+ const gameSelect = document.getElementById('gameSelect');
   const gameText = gameSelect && gameSelect.selectedIndex >= 0
     ? gameSelect.options[gameSelect.selectedIndex].text
     : 'Current Reservations';
@@ -1212,15 +1212,60 @@ if (noteBox) {
 button {
           display: none !important;
         }
+.reservation-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 12px;
+}
+
+.reservation-table th,
+.reservation-table td {
+  height: 22px;
+  padding: 0;
+  vertical-align: middle;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.reservation-table .player-col,
+.reservation-table .player-name {
+  width: 55%;
+  text-align: left;
+}
+
+.reservation-table th:not(.player-col),
+.reservation-table td:not(.player-name) {
+  width: 9%;
+}
+
+.reservation-table thead th {
+  font-weight: bold;
+  border-bottom: 2px solid #000;
+}
+
       </style>
     </head>
     <body>
       <h1>MuniBoys And Friends Golf Club of Las Vegas</h1>
       <h2>${gameText}</h2>
       <h3>Current Reservations</h3>
-     <div style="display:grid;grid-template-columns:1fr 55px 55px 55px 55px 55px;gap:4px;font-weight:bold;border-bottom:2px solid #000;padding:6px 0;margin-bottom:6px;"><span>Player</span><span>Pot</span><span>CP</span><span>Qual</span><span>Csh</span><span>Rcpt</span></div> 
-     ${printList.innerHTML}
-     </body>
+   <table class="reservation-table">
+  <thead>
+    <tr>
+      <th class="player-col">Player</th>
+      <th>Pot</th>
+      <th>CP</th>
+      <th>Qual</th>
+      <th>Csh</th>
+      <th>Rcpt</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${tableRows}
+  </tbody>
+</table>
+</body>
     </html>
   `);
 
