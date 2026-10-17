@@ -1176,8 +1176,7 @@ const nameSpan = row.querySelector('span');
 nameSpan.style.gridColumn = '1';
 nameSpan.style.margin = '0';
 nameSpan.style.padding = '0';
-
-row.insertAdjacentHTML('beforeend',
+row.insertAdjacentHTML('afterbegin',
 '<span class="print-check">□</span><span class="print-check">□</span><span class="print-check">□</span><span class="print-check">□</span><span class="print-check">□</span>'
   );
   const noteBox = row.querySelector('div');
