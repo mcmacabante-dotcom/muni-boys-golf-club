@@ -359,8 +359,11 @@ const SUPABASE_URL = 'https://iwxfbdjgzzynhjdzvhjq.supabase.co';
  const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
  console.log("Supabase connected", db);
  
- loadReservations();
-loadGames().then(loadFoursomes);
+ 
+loadGames().then(() => {
+  loadFoursomes();
+  loadReservations();
+});
  loadMembers();
  async function loadReservations() {
   const list = document.getElementById('reservationList');
