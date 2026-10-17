@@ -1174,11 +1174,11 @@ row.style.padding = '0';
 
 const nameSpan = row.querySelector('span');
 nameSpan.style.gridColumn = '1';
-nameSpan.style.margin = '0';
+  nameSpan.style.margin = '0';
 nameSpan.style.padding = '0';
-row.insertAdjacentHTML('afterbegin',
-'<span class="print-check">□</span><span class="print-check">□</span><span class="print-check">□</span><span class="print-check">□</span><span class="print-check">□</span>'
-  );
+row.insertAdjacentHTML('beforeend',
+  '<span class="print-check" style="grid-column:2">□</span><span class="print-check" style="grid-column:3">□</span><span class="print-check" style="grid-column:4">□</span><span class="print-check" style="grid-column:5">□</span><span class="print-check" style="grid-column:6">□</span>'
+);
   const noteBox = row.querySelector('div');
 if (noteBox) {
   noteBox.remove();
