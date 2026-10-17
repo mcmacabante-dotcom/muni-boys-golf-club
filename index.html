@@ -1164,13 +1164,22 @@ const printList = list.cloneNode(true);
 printList.querySelectorAll('button').forEach(button => button.remove());
 const playerRows = printList.querySelectorAll('.player');
  playerRows.forEach(row => {
-  row.style.display = 'grid';
-  row.style.gridTemplateColumns = '1fr 55px 55px 55px 55px 55px';
-  row.style.gap = '4px';
-  row.style.alignItems = 'center';
-  row.style.lineHeight = '1';
-  row.querySelector('span').style.gridColumn = '1';
-  row.insertAdjacentHTML('beforeend', '<span class="print-check" style="grid-column:2">□</span><span class="print-check">□</span><span class="print-check">□</span><span class="print-check">□</span><span class="print-check">□</span>');
+ row.style.display = 'grid';
+row.style.gridTemplateColumns = '1fr 55px 55px 55px 55px 55px';
+row.style.columnGap = '4px';
+row.style.alignItems = 'center';
+row.style.minHeight = '20px';
+row.style.margin = '0';
+row.style.padding = '0';
+
+const nameSpan = row.querySelector('span');
+nameSpan.style.gridColumn = '1';
+nameSpan.style.margin = '0';
+nameSpan.style.padding = '0';
+
+row.insertAdjacentHTML('beforeend',
+  '<span class="print-check">□</span><span class="print-check">□</span><span class="print-check">□</span><span class="print-check">□</span><span class="print-check">□</span>'
+);
   const noteBox = row.querySelector('div');
 if (noteBox) {
   noteBox.remove();
@@ -1200,12 +1209,7 @@ if (noteBox) {
           margin-top: 0;
           font-weight: normal;
         }
-        .print-check {
-        position: relative;
-        }
-        .print-check {
-    top: -5px;
-    }
+      
 button {
           display: none !important;
         }
