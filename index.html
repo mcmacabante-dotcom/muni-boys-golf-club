@@ -497,10 +497,12 @@ const reservationCount = gameReservations.filter(
   const gameRow = document.createElement('div');
 gameRow.textContent = `${dateText} – ${game.course_name} – ${reservationCount} players reserved — Limit: ${game.max_players || 60}`;
   gameRow.style.cursor = 'pointer';
-  gameRow.onclick = () => {
-  select.value = game.id;
-   document.getElementById('adminGameMessage').value = game.admin_message || '';
-   showPage('reservations', null);
+gameRow.onclick = async () => {
+    select.value = game.id;
+    document.getElementById('adminGameMessage').value = game.admin_message || '';
+    showPage('reservations', null);
+    await loadReservations();
+    await loadFoursomeChoices();
 };
   const editButton = document.createElement('button');
 editButton.textContent = 'Edit';
