@@ -557,7 +557,14 @@ if (foursomeError) {
 }
   document.getElementById('newCourseName').value = '';
   document.getElementById('newGameDate').value = '';
-  await loadGames();
+ await loadGames();
+
+const gameSelect = document.getElementById('gameSelect');
+gameSelect.value = String(newGameId);
+
+await loadReservations();
+await loadFoursomeChoices();
+await loadSelectedGameAdminMessage();  
   alert('Game added successfully!');
  }
 
