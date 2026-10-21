@@ -413,8 +413,8 @@ async function loadMembers() {
    
 const deleteButton = document.createElement('button');
 deleteButton.textContent = 'Delete';
-deleteButton.onclick = () => deleteMember(member.signup_id, member.name);
-row.appendChild(deleteButton);
+deleteButton.onclick = () => deleteMember(member.id, member.name);
+   row.appendChild(deleteButton);
 
 list.appendChild(row);  });
 }
