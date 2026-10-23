@@ -1169,35 +1169,79 @@ function printCurrentReservations() {
     alert('There are no current reservations to print.');
     return;
   }
-const printList = list.cloneNode(true);
-printList.querySelectorAll('button').forEach(button => button.remove());
 
-const playerRows = Array.from(printList.querySelectorAll('.player')).filter(row => {
+  const printList = list.cloneNode(true);
+  printList.querySelectorAll('button').forEach(button => button.remove());
+
+  const playerRows = Array.from(
+    printList.querySelectorAll('.player')
+  ).filter(row => {
     return window.getComputedStyle(row).display !== 'none';
-});
-let tableRows = '';
+  });
 
-playerRows.forEach(row => {
-  const nameSpan = row.querySelector('span');
-  if (!nameSpan) return;
+  const walkRows = [];
+  const rideRows = [];
 
-  const playerName = nameSpan.textContent.trim();
+  playerRows.forEach(row => {
+    const nameSpan = row.querySelector('span');
+    if (!nameSpan) return;
 
-  tableRows += `
-    <tr>
-      <td class="player-name">${playerName}</td>
-      <td>□</td>
-      <td>□</td>
-      <td>□</td>
-      <td>□</td>
-      <td>□</td>
-    </tr>
+    const playerName = nameSpan.textContent.trim();
+    const rowText = row.textContent.toLowerCase();
+
+    const tableRow = `
+      <tr>
+        <td class="player-name">${playerName}</td>
+        <td>□</td>
+        <td>□</td>
+        <td>□</td>
+        <td>□</td>
+        <td>□</td>
+      </tr>
+    `;
+
+    if (
+      rowText.includes('walking') ||
+      rowText.includes('walk')
+    ) {
+      walkRows.push(tableRow);
+    } else if (
+      rowText.includes('riding') ||
+      rowText.includes('ride')
+    ) {
+      rideRows.push(tableRow);
+    } else {
+      rideRows.push(tableRow);
+    }
+  });
+
+  const gameSelect = document.getElementById('gameSelect');
+  const gameText =
+    gameSelect && gameSelect.selectedIndex >= 0
+      ? gameSelect.options[gameSelect.selectedIndex].text
+      : 'Current Reservations';
+
+  const makeTable = (title, rows) => `
+    <section class="reservation-section">
+      <h3>${title} — ${rows.length} Players</h3>
+
+      <table class="reservation-table">
+        <thead>
+          <tr>
+            <th class="player-col">Player</th>
+            <th>Pot</th>
+            <th>CP</th>
+            <th>Qual</th>
+            <th>Csh</th>
+            <th>Rcpt</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.join('')}
+        </tbody>
+      </table>
+    </section>
   `;
-});
- const gameSelect = document.getElementById('gameSelect');
-  const gameText = gameSelect && gameSelect.selectedIndex >= 0
-    ? gameSelect.options[gameSelect.selectedIndex].text
-    : 'Current Reservations';
 
   const printWindow = window.open('', '_blank');
 
@@ -1205,85 +1249,95 @@ playerRows.forEach(row => {
     <html>
     <head>
       <title>Current Reservations</title>
+
       <style>
         body {
           font-family: Arial, sans-serif;
           padding: 10px;
           color: #000;
         }
+
         h1 {
           margin-bottom: 5px;
         }
+
         h2 {
           margin-top: 0;
           font-weight: normal;
         }
-      
-button {
-          display: none !important;
+
+        h3 {
+          margin-bottom: 8px;
         }
-.reservation-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-  font-size: 15px;
-}
 
-.reservation-table th,
-.reservation-table td {
-  height: 24px;
-  padding: 0;
-  vertical-align: middle;
-  text-align: center;
-  border-bottom: 1px solid #ddd;
-}
+        .reservation-table {
+          width: 100%;
+          border-collapse: collapse;
+          table-layout: fixed;
+          font-size: 15px;
+        }
 
-.reservation-table .player-col,
-.reservation-table .player-name {
-  width: 55%;
-  text-align: left;
-}
+        .reservation-table th,
+        .reservation-table td {
+          height: 24px;
+          padding: 0;
+          vertical-align: middle;
+          text-align: center;
+          border-bottom: 1px solid #ddd;
+        }
 
-.reservation-table th:not(.player-col),
-.reservation-table td:not(.player-name) {
-  width: 9%;
-}
+        .reservation-table .player-col,
+        .reservation-table .player-name {
+          width: 55%;
+          text-align: left;
+        }
 
-.reservation-table thead th {
-  font-weight: bold;
-  border-bottom: 2px solid #000;
-}
+        .reservation-table th:not(.player-col),
+        .reservation-table td:not(.player-name) {
+          width: 9%;
+        }
 
+        .reservation-table thead th {
+          font-weight: bold;
+          border-bottom: 2px solid #000;
+        }
+
+        .ride-page {
+          page-break-before: always;
+          break-before: page;
+        }
+
+        @media print {
+          .ride-page {
+            page-break-before: always;
+            break-before: page;
+          }
+        }
       </style>
     </head>
+
     <body>
       <h1>MuniBoys And Friends Golf Club of Las Vegas</h1>
       <h2>${gameText}</h2>
-      <h3>Current Reservations</h3>
-   <table class="reservation-table">
-  <thead>
-    <tr>
-      <th class="player-col">Player</th>
-      <th>Pot</th>
-      <th>CP</th>
-      <th>Qual</th>
-      <th>Csh</th>
-      <th>Rcpt</th>
-    </tr>
-  </thead>
-  <tbody>
-    ${tableRows}
-  </tbody>
-</table>
-</body>
+
+      ${makeTable('WALK', walkRows)}
+
+      <div class="ride-page">
+        <h1>MuniBoys And Friends Golf Club of Las Vegas</h1>
+        <h2>${gameText}</h2>
+
+        ${makeTable('RIDE', rideRows)}
+      </div>
+    </body>
     </html>
   `);
 
   printWindow.document.close();
   printWindow.focus();
- setTimeout(() => {
-  printWindow.print();
-}, 2000);
+
+  setTimeout(() => {
+    printWindow.print();
+  }, 2000);
 }
  
 </script> 
