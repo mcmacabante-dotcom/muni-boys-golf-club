@@ -1182,7 +1182,7 @@ function printCurrentReservations() {
   const walkRows = [];
   const rideRows = [];
 
-  playerRows.forEach(row => {
+ playerRows.forEach(row => {
     const nameSpan = row.querySelector('span');
     if (!nameSpan) return;
 
@@ -1191,7 +1191,8 @@ function printCurrentReservations() {
 
     const tableRow = `
       <tr>
-        <td class="player-name">${playerName}</td>
+<td class="player-name">${playerName}</td>
+
         <td>□</td>
         <td>□</td>
         <td>□</td>
@@ -1214,8 +1215,20 @@ function printCurrentReservations() {
       rideRows.push(tableRow);
     }
   });
+walkRows.forEach((row, index) => {
+  walkRows[index] = row.replace(
+    'class="player-name">',
+    `class="player-name">${index + 1}. `
+  );
+});
 
-  const gameSelect = document.getElementById('gameSelect');
+rideRows.forEach((row, index) => {
+  rideRows[index] = row.replace(
+    'class="player-name">',
+    `class="player-name">${walkRows.length + index + 1}. `
+  );
+});
+ const gameSelect = document.getElementById('gameSelect');
   const gameText =
     gameSelect && gameSelect.selectedIndex >= 0
       ? gameSelect.options[gameSelect.selectedIndex].text
