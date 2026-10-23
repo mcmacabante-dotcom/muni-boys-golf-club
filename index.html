@@ -1186,8 +1186,8 @@ function printCurrentReservations() {
     const nameSpan = row.querySelector('span');
     if (!nameSpan) return;
 
-    const playerName = nameSpan.textContent.trim();
-    const rowText = row.textContent.toLowerCase();
+   const playerName = nameSpan.textContent.trim().replace(/^\d+\.\s*/, '');
+  const rowText = row.textContent.toLowerCase();
 
     const tableRow = `
       <tr>
