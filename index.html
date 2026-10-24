@@ -726,7 +726,8 @@ document.getElementById('foursomeGameSelect').value = document.getElementById('g
   window.foursomeWasChosen = false;
   showPage('pairings', null);
  loadFoursomes();
-}
+  loadFoursomeChoices();
+ }
 
  async function loadFoursomeChoices() {
   const choice = document.getElementById('foursomeChoice');
