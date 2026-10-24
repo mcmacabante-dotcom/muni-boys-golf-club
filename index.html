@@ -393,9 +393,7 @@ row.style.display = 'block';
    list.appendChild(row);
   });
 }
-setInterval(() => {
-  loadReservations();
-}, 3000); 
+
 async function loadMembers() {
  const list = document.getElementById('memberList');
  if (!list) return;
