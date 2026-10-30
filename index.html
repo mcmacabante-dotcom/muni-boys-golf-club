@@ -404,8 +404,8 @@ async function loadWaitlist() {
 
   list.innerHTML = '';
 
-  const selectedGameId = Number(document.getElementById('gameSelect')?.value || 0);
-
+  const selectedGameId = 55;
+ 
   const { data, error } = await db
     .from('waitlist')
     .select('id, game_id, member_id, ride_option, notes, created_at, members(name)')
