@@ -374,6 +374,7 @@ loadGames().then(() => {
  loadMembers();
  async function loadReservations() {
   const list = document.getElementById('reservationList');
+  const selectedGameId = Number(document.getElementById('gameSelect')?.value || 0);
   list.innerHTML = '';
  
   const { data, error } = await db.rpc('get_reservations');
@@ -382,7 +383,7 @@ loadGames().then(() => {
   alert('Reservation list error: ' + error.message);
   return;
   }
-const selectedGameId = Number(document.getElementById('gameSelect')?.value || 0);
+
   list.innerHTML = '';
 let gamePlayerNumber = 0;
   data.forEach((r, index) => {
