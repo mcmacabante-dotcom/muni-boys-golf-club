@@ -1005,10 +1005,7 @@ if (gameInfoError) {
 
 const reservedCount = existing.filter(r => r.game_id === Number(gameId)).length;
 
-if (reservedCount >= gameInfo.max_players) {
- alert('This game is full. The player limit has been reached.');
-  return false;
-}
+
   const { data, error } = await db.rpc('reserve_by_name', {
     p_name: name,
     p_game_id: Number(gameId),
