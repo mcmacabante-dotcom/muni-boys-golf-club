@@ -372,34 +372,61 @@ loadReservations();
 loadWaitlist();
 });
  loadMembers();
- async function loadReservations() {
+async function loadReservations() {
   const list = document.getElementById('reservationList');
-  const selectedGameId = Number(document.getElementById('gameSelect')?.value || 0);
+  if (!list) return;
+
+  const selectedGameId = Number(
+    document.getElementById('gameSelect')?.value || 0
+  );
+
   list.innerHTML = '';
- 
+
+  if (!selectedGameId) {
+    list.innerHTML = '<p>Please select a game.</p>';
+    return;
+  }
+
   const { data, error } = await db.rpc('get_reservations');
 
   if (error) {
-  alert('Reservation list error: ' + error.message);
-  return;
+    alert('Reservation list error: ' + error.message);
+    return;
   }
 
-  list.innerHTML = '';
-let gamePlayerNumber = 0;
-  data.forEach((r, index) => {
-   if (selectedGameId && Number(r.game_id) !== selectedGameId) return;
-   gamePlayerNumber++;
-   const row = document.createElement('div');
-  row.className = 'player';
-row.style.display = 'block';
-   row.innerHTML = `<span>${gamePlayerNumber}.${r.player_name}${r.ride_option ? ' — ' + r.ride_option : ''}</span><span><button onclick="editReservation(${r.signup_id})">Edit</button> <button onclick="cancelReservation(${r.signup_id})">Cancel</button></span>`;
-   if (r.notes) row.insertAdjacentHTML('beforeend', `<div style="margin-top:8px; padding:8px 12px; border:1px solid #ccc; border-radius:8px; background:#f7f7f7;"><strong>Notes / Requests:</strong> ${r.notes}</div>`);
-   if (r.notes) row.querySelector('div').style.width = 'auto';
-   if (r.notes) row.querySelector('div').style.clear = 'both';
-   list.appendChild(row);
+  const reservations = (data || []).filter(
+    r => Number(r.game_id) === selectedGameId
+  );
+
+  if (reservations.length === 0) {
+    list.innerHTML = '<p>No reservations for this game.</p>';
+    return;
+  }
+
+  reservations.forEach((r, index) => {
+    const row = document.createElement('div');
+    row.className = 'player';
+    row.style.display = 'block';
+
+    row.innerHTML =
+      `<span>${index + 1}. ${r.player_name}${r.ride_option ? ' — ' + r.ride_option : ''}</span>` +
+      `<span><button onclick="editReservation(${r.signup_id}, '${r.ride_option || ''}', '${(r.notes || '').replace(/'/g, "\\'")}')">Edit</button> ` +
+      `<button onclick="cancelReservation(${r.signup_id})">Cancel</button></span>`;
+
+    if (r.notes) {
+      row.insertAdjacentHTML(
+        'beforeend',
+        `<div style="margin-top:8px; padding:8px 12px; border:1px solid #ccc; border-radius:6px;"><strong>Notes / Requests:</strong> ${r.notes}</div>`
+      );
+
+      row.querySelector('div').style.width = 'auto';
+      row.querySelector('div').style.clear = 'both';
+    }
+
+    list.appendChild(row);
   });
 }
-async function loadWaitlist() {
+ async function loadWaitlist() {
  const list = document.getElementById('waitlistList');
  if (!list) return;
 
