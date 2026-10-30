@@ -176,7 +176,11 @@ Monday • 8:00 AM<br><br>
 </div>
 
 </div>
-
+ <div class="card">
+  <h2>Standby List</h2>
+  <div id="waitlistList"></div>
+</div>
+ 
 </section>
 
 <section id="pairings" class="hidden">
@@ -365,6 +369,7 @@ const SUPABASE_URL = 'https://iwxfbdjgzzynhjdzvhjq.supabase.co';
 loadGames().then(() => {
   loadFoursomes();
   loadReservations();
+ loadWaitlist();
 });
  loadMembers();
  async function loadReservations() {
@@ -393,6 +398,43 @@ row.style.display = 'block';
    list.appendChild(row);
   });
 }
+async function loadWaitlist() {
+  const list = document.getElementById('waitlistList');
+  if (!list) return;
+
+  list.innerHTML = '';
+
+  const selectedGameId = Number(document.getElementById('gameSelect')?.value || 0);
+
+  const { data, error } = await db
+    .from('waitlist')
+    .select('id, game_id, member_id, ride_option, notes, created_at, members(name)')
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    console.log('Waitlist error:', error);
+    list.innerHTML = '<p>Could not load Standby List.</p>';
+    return;
+  }
+
+  const standby = (data || []).filter(r =>
+    !selectedGameId || Number(r.game_id) === selectedGameId
+  );
+
+  if (standby.length === 0) {
+    list.innerHTML = '<p>No players on standby.</p>';
+    return;
+  }
+
+  standby.forEach((r, index) => {
+    const row = document.createElement('div');
+    row.className = 'player';
+    row.textContent =
+      `${index + 1}. ${r.members?.name || 'Unknown Player'}${r.ride_option ? ' — ' + r.ride_option : ''}`;
+    list.appendChild(row);
+  });
+}
+ 
 
 async function loadMembers() {
  const list = document.getElementById('memberList');
@@ -503,7 +545,8 @@ gameRow.onclick = async () => {
     document.getElementById('adminGameMessage').value = game.admin_message || '';
     showPage('reservations', null);
     await loadReservations();
-    await loadFoursomeChoices();
+ await loadWaitlist();
+ await loadFoursomeChoices();
 };
   const editButton = document.createElement('button');
 editButton.textContent = 'Edit';
@@ -1033,6 +1076,7 @@ const reservedCount = existing.filter(r => r.game_id === Number(gameId)).length;
  window.foursomeWasChosen = false;
  window.selectedFoursomeId = null;
  await loadReservations();
+ await loadWaitlist();
  return true;
 }
  
