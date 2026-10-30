@@ -563,7 +563,8 @@ gameRow.appendChild(editButton);
    foursomeSelect.appendChild(option.cloneNode(true));
   });
  if (selectedGame) select.value = selectedGame;
-  await loadReservations();
+ await loadReservations();
+  await loadWaitlist(); 
   loadSelectedGameAdminMessage();
  }
  async function addGame() {
