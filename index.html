@@ -418,10 +418,10 @@ const selectedGameId = Number(document.getElementById('gameSelect')?.value || 0)
     return;
   }
 
-  const standby = (data || []).filter(r =>
-    !selectedGameId || Number(r.game_id) === selectedGameId
-  );
-
+  const standby = selectedGameId
+  ? (data || []).filter(r => Number(r.game_id) === selectedGameId)
+  : [];
+ 
   if (standby.length === 0) {
     list.innerHTML = '<p>No players on standby.</p>';
     return;
