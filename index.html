@@ -1025,7 +1025,11 @@ const reservedCount = existing.filter(r => r.game_id === Number(gameId)).length;
    return false;
   }
 
+ if (reservedCount >= gameInfo.max_players) {
+  alert('Game is full. You have been added to the Standby List.');
+} else {
   alert('Reservation saved!');
+}
  window.foursomeWasChosen = false;
  window.selectedFoursomeId = null;
  await loadReservations();
