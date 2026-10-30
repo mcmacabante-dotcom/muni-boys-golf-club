@@ -408,7 +408,8 @@ async function loadWaitlist() {
 
   const { data, error } = await db
     .from('waitlist')
-    .select('id, game_id, member_id, ride_option, notes, created_at, members(name)')
+    .select('id, game_id, member_id, ride_option, notes, created_at, members!waitlist_member_id_fkey(name)')
+   
     .order('created_at', { ascending: true });
 
   if (error) {
