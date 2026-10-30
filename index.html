@@ -368,7 +368,8 @@ const SUPABASE_URL = 'https://iwxfbdjgzzynhjdzvhjq.supabase.co';
  
 loadGames().then(() => {
   loadFoursomes();
-  
+loadReservations();
+loadWaitlist();
 });
  loadMembers();
  async function loadReservations() {
@@ -399,8 +400,8 @@ row.style.display = 'block';
   });
 }
 async function loadWaitlist() {
-  const list = document.getElementById('waitlistList');
-  if (!list) return;
+ const list = document.getElementById('waitlistList');
+ if (!list) return;
 
   list.innerHTML = '';
 
