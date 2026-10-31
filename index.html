@@ -454,16 +454,51 @@ const selectedGameId = Number(document.getElementById('gameSelect')?.value || 0)
     return;
   }
 
-  standby.forEach((r, index) => {
-    const row = document.createElement('div');
-    row.className = 'player';
-    row.textContent =
-      `${index + 1}. ${r.members?.name || 'Unknown Player'}${r.ride_option ? ' — ' + r.ride_option : ''}`;
-    list.appendChild(row);
-  });
-}
- 
+ standby.forEach((r, index) => {
+  const row = document.createElement('div');
+  row.className = 'player';
 
+  const name = document.createElement('span');
+  name.textContent =
+    `${index + 1}. ${r.members?.name || 'Unknown Player'}${r.ride_option ? ' — ' + r.ride_option : ''}`;
+
+  const deleteButton = document.createElement('button');
+  deleteButton.textContent = 'Delete';
+  deleteButton.onclick = () => deleteWaitlistPlayer(r.id, r.members?.name || 'this player');
+
+  row.appendChild(name);
+  row.appendChild(deleteButton);
+  list.appendChild(row);
+});
+ }
+ async function deleteWaitlistPlayer(id, playerName) {
+  if (!confirm('Delete ' + playerName + ' from the Standby List?')) return;
+
+  const pin = prompt('Enter Admin PIN:');
+  if (!pin) return;
+
+  const { data: pinOK, error: pinError } = await db.rpc('verify_admin_pin', {
+    admin_pin: pin
+  });
+
+  if (pinError || !pinOK) {
+    alert('Incorrect Admin PIN.');
+    return;
+  }
+
+  const { error } = await db
+    .from('waitlist')
+    .delete()
+    .eq('id', Number(id));
+
+  if (error) {
+    alert('Could not delete player from Standby List: ' + error.message);
+    return;
+  }
+
+  alert(playerName + ' removed from Standby List.');
+  await loadWaitlist();
+}
 async function loadMembers() {
  const list = document.getElementById('memberList');
  if (!list) return;
