@@ -471,35 +471,31 @@ const selectedGameId = Number(document.getElementById('gameSelect')?.value || 0)
   list.appendChild(row);
 });
  }
- async function deleteWaitlistPlayer(id, playerName) {
+async function deleteWaitlistPlayer(id, playerName) {
   if (!confirm('Delete ' + playerName + ' from the Standby List?')) return;
 
   const pin = prompt('Enter Admin PIN:');
   if (!pin) return;
 
-  const { data: pinOK, error: pinError } = await db.rpc('verify_admin_pin', {
+  const { data, error } = await db.rpc('admin_delete_waitlist_player', {
+    waitlist_id: Number(id),
     admin_pin: pin
   });
-
-  if (pinError || !pinOK) {
-    alert('Incorrect Admin PIN.');
-    return;
-  }
-
-  const { error } = await db
-    .from('waitlist')
-    .delete()
-    .eq('id', Number(id));
 
   if (error) {
     alert('Could not delete player from Standby List: ' + error.message);
     return;
   }
 
+  if (!data) {
+    alert('Incorrect Admin PIN or standby player was not found.');
+    return;
+  }
+
   alert(playerName + ' removed from Standby List.');
   await loadWaitlist();
 }
-async function loadMembers() {
+ async function loadMembers() {
  const list = document.getElementById('memberList');
  if (!list) return;
 
