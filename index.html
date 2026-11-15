@@ -452,6 +452,56 @@ async function loadReservations() {
   notice.textContent = message;
   notice.style.display = message.trim() ? 'block' : 'none';
 }
+ 
+ async function editGeneralPlayerNotice() {
+  const pin = prompt('Enter Admin PIN:');
+  if (!pin) return;
+
+  const message = prompt('Enter general notification for players:');
+  if (message === null) return;
+
+  const { data, error } = await db.rpc('set_general_player_notice', {
+    p_message: message,
+    admin_pin: pin
+  });
+
+  if (error) {
+    alert('Could not save notification: ' + error.message);
+    return;
+  }
+
+  if (!data) {
+    alert('Incorrect Admin PIN.');
+    return;
+  }
+
+  alert('General notification saved!');
+  await loadGeneralPlayerNotice();
+}
+ async function deleteGeneralPlayerNotice() {
+  if (!confirm('Delete the general notification?')) return;
+
+  const pin = prompt('Enter Admin PIN:');
+  if (!pin) return;
+
+  const { data, error } = await db.rpc('set_general_player_notice', {
+    p_message: '',
+    admin_pin: pin
+  });
+
+  if (error) {
+    alert('Could not delete notification: ' + error.message);
+    return;
+  }
+
+  if (!data) {
+    alert('Incorrect Admin PIN.');
+    return;
+  }
+
+  alert('General notification deleted!');
+  await loadGeneralPlayerNotice();
+}
  async function loadWaitlist() {
   const list = document.getElementById('waitlistList');
  if (!list) return;
