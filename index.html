@@ -428,7 +428,26 @@ async function loadReservations() {
   });
 }
  async function loadWaitlist() {
- const list = document.getElementById('waitlistList');
+  async function loadGeneralPlayerNotice() {
+  const notice = document.getElementById('generalPlayerNotice');
+  if (!notice) return;
+
+  const { data, error } = await db
+    .from('general_player_notice')
+    .select('message')
+    .eq('id', 1)
+    .maybeSingle();
+
+  if (error) {
+    console.error('Could not load general notification:', error);
+    return;
+  }
+
+  const message = data?.message || '';
+  notice.textContent = message;
+  notice.style.display = message.trim() ? 'block' : 'none';
+}
+  const list = document.getElementById('waitlistList');
  if (!list) return;
 
   list.innerHTML = '';
@@ -542,8 +561,9 @@ async function loadSelectedGameAdminMessage() {
   box.value = data?.admin_message || '';
 } 
  async function loadGames() {
-  const select = document.getElementById('gameSelect');
- const foursomeSelect = document.getElementById('foursomeGameSelect');
+  await loadGeneralPlayerNotice();
+const select = document.getElementById('gameSelect');
+  const foursomeSelect = document.getElementById('foursomeGameSelect');
  const gamesList = document.getElementById('gamesList');
  if (!select) return;
 
